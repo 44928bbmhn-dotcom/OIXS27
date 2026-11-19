@@ -312,8 +312,20 @@ function showPDFName() {
 
 updateDates();
 loadPrayers();
+
+let lastPrayerDate = new Date().toDateString();
+
+setInterval(() => {
+  const today = new Date().toDateString();
+
+  if (today !== lastPrayerDate) {
+    lastPrayerDate = today;
+    updateDates();
+    loadPrayers();
+  }
+  }, 60000);
 </script>
-</script>
+
 
 <section class="card">
   <h2>📱 اختصارات الآيفون</h2>

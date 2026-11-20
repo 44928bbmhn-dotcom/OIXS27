@@ -3,48 +3,173 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+
 <title>مكتبة اختصارات OIXS27</title>
 
 <style>
-* { box-sizing: border-box; }
+* {
+  box-sizing: border-box;
+}
 
 body {
   margin: 0;
-  background: #0b1020;
-  color: white;
   font-family: Arial, sans-serif;
-  text-align: center;
+  background: #080e19;
+  color: white;
 }
 
 header {
-  background: #151d32;
+  background: linear-gradient(135deg, #152a50, #101827);
   padding: 30px 15px;
-  border-bottom: 2px solid #eab308;
+  text-align: center;
+  border-bottom: 2px solid #facc15;
 }
 
-h1, h2 { color: #facc15; }
+h1 {
+  color: #facc15;
+  margin: 0 0 12px;
+}
+
+header p {
+  color: #cbd5e1;
+}
+
+.container {
+  max-width: 900px;
+  margin: auto;
+  padding: 20px 15px;
+}
+
+.search {
+  width: 100%;
+  padding: 17px;
+  border-radius: 15px;
+  border: 1px solid #475569;
+  background: #172338;
+  color: white;
+  font-size: 17px;
+  margin-bottom: 20px;
+}
+
+.filters {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 25px;
+}
+
+.filters button {
+  padding: 12px 17px;
+  border: 1px solid #475569;
+  border-radius: 12px;
+  background: #1e293b;
+  color: white;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.filters button.active {
+  background: #facc15;
+  color: #111827;
+  font-weight: bold;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 15px;
+}
 
 .card {
-  background: #1e293b;
-  margin: 20px;
-  padding: 25px 15px;
-  border-radius: 18px;
+  min-height: 180px;
+  border-radius: 22px;
+  padding: 20px 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  text-align: center;
+  overflow-wrap: anywhere;
+  box-shadow: 0 5px 15px #0005;
 }
 
-.btn {
+.icon {
+  font-size: 38px;
+}
+
+.card h2 {
+  font-size: 19px;
+  margin: 10px 0;
+}
+
+.card p {
+  font-size: 13px;
+  opacity: 0.9;
+}
+
+.card a {
   display: block;
-  background: #eab308;
+  background: #ffffff;
   color: #111827;
-  padding: 17px 10px;
-  margin-top: 15px;
+  padding: 12px 8px;
   border-radius: 12px;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.blue {
+  background: linear-gradient(135deg, #2563eb, #1e40af);
+}
+
+.green {
+  background: linear-gradient(135deg, #16a34a, #166534);
+}
+
+.orange {
+  background: linear-gradient(135deg, #f59e0b, #b45309);
+}
+
+.purple {
+  background: linear-gradient(135deg, #9333ea, #581c87);
+}
+
+.red {
+  background: linear-gradient(135deg, #ef4444, #991b1b);
+}
+
+.teal {
+  background: linear-gradient(135deg, #0891b2, #155e75);
+}
+
+.empty {
+  text-align: center;
+  padding: 25px;
+  color: #94a3b8;
+}
+
+.back {
+  display: block;
+  text-align: center;
+  margin: 30px 0;
+  background: #facc15;
+  color: #111827;
+  padding: 15px;
+  border-radius: 15px;
   text-decoration: none;
   font-weight: bold;
 }
 
 footer {
+  text-align: center;
   padding: 25px;
-  color: #cbd5e1;
+  color: #94a3b8;
+  border-top: 1px solid #334155;
+}
+
+@media (max-width: 350px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
 }
 </style>
 </head>
@@ -53,61 +178,132 @@ footer {
 
 <header>
   <h1>📱 مكتبة اختصارات OIXS27</h1>
-  <p>اختصارات iPhone مجانية ومفيدة</p>
+  <p>اختصارات مجانية ومفيدة للآيفون</p>
+  <p>🇸🇦 صُنع في المملكة العربية السعودية</p>
 </header>
 
-<!-- مكتبة اختصارات OIXS27 -->
+<div class="container">
 
-<section class="card">
-  <h2>📱 مكتبة اختصارات OIXS27</h2>
-  <p>اختصارات مجانية ومفيدة للآيفون</p>
-</section>
+<input
+  class="search"
+  id="search"
+  type="search"
+  placeholder="🔎 ابحث عن اختصار..."
+  oninput="filterCards()"
+>
 
-<section class="card">
-  <h2>🔄 تحديث نظام iPhone</h2>
-  <a class="btn"
-     href="https://www.icloud.com/shortcuts/f632f0f468114deeb1f65a14da582ced"
+<div class="filters">
+  <button class="active" onclick="setCategory('all',this)">الكل</button>
+  <button onclick="setCategory('system',this)">⚙️ النظام</button>
+  <button onclick="setCategory('storage',this)">💾 التخزين</button>
+  <button onclick="setCategory('tools',this)">🛠️ الأدوات</button>
+</div>
+
+<div class="grid" id="cards">
+
+<div class="card blue" data-category="system">
+  <div>
+    <div class="icon">🔄</div>
+    <h2>تحديث النظام</h2>
+    <p>اختصار تحديث نظام iPhone</p>
+  </div>
+  <a href="https://www.icloud.com/shortcuts/f632f0f468114deeb1f65a14da582ced"
      target="_blank"
      rel="noopener noreferrer">
-    📲 إضافة اختصار تحديث النظام
+    📲 إضافة الاختصار
   </a>
-</section>
+</div>
 
-<section class="card">
-  <h2>💾 مساحة تخزين iPhone</h2>
-  <a class="btn"
-     href="https://www.icloud.com/shortcuts/c99dbcbca3c74e38bcaaeaf27629380f"
+<div class="card green" data-category="storage">
+  <div>
+    <div class="icon">💾</div>
+    <h2>مساحة تخزين iPhone</h2>
+    <p>اختصار مساحة تخزين الجهاز</p>
+  </div>
+  <a href="https://www.icloud.com/shortcuts/c99dbcbca3c74e38bcaaeaf27629380f"
      target="_blank"
      rel="noopener noreferrer">
-    📲 إضافة اختصار مساحة التخزين
+    📲 إضافة الاختصار
   </a>
-</section>
+</div>
 
-<section class="card">
-  <h2>📱 اختصارات جديدة</h2>
-  <p>قريبًا نضيف اختصارات أخرى</p>
-</section>
-
-
-<section class="card">
-  <a class="btn" href="index.html">
-    🏠 العودة للصفحة الرئيسية
+<div class="card orange" data-category="tools">
+  <div>
+    <div class="icon">📱</div>
+    <h2>اختصارات جديدة</h2>
+    <p>قريبًا نضيف اختصارات أخرى</p>
+  </div>
+  <a href="#" onclick="return false;">
+    قريبًا
   </a>
-</section>
+</div>
+
+<div class="card purple" data-category="tools">
+  <div>
+    <div class="icon">⭐</div>
+    <h2>اختصارات مميزة</h2>
+    <p>مكان مخصص للاختصارات القادمة</p>
+  </div>
+  <a href="#" onclick="return false;">
+    قريبًا
+  </a>
+</div>
+
+</div>
+
+<p class="empty" id="empty" hidden>
+  لا توجد اختصارات مطابقة للبحث.
+</p>
+
+<a class="back" href="index.html">
+  🏠 العودة للصفحة الرئيسية
+</a>
+
+</div>
 
 <footer>
   <p>© 2026 OIXS27</p>
-  <p>🇸🇦 صنع في المملكة العربية السعودية</p>
+  <p>🇸🇦 المملكة العربية السعودية</p>
 </footer>
-<script>
-document.querySelectorAll('a.btn').forEach(button => {
-  button.addEventListener('click', () => {
-    if (!button.href.includes('icloud.com/shortcuts/')) return;
 
-    let count = Number(localStorage.getItem('shortcutClicks') || 0);
-    localStorage.setItem('shortcutClicks', count + 1);
+<script>
+let currentCategory = "all";
+
+function setCategory(category, button) {
+  currentCategory = category;
+
+  document.querySelectorAll(".filters button")
+    .forEach(b => b.classList.remove("active"));
+
+  button.classList.add("active");
+
+  filterCards();
+}
+
+function filterCards() {
+  const search = document.getElementById("search")
+    .value.toLowerCase().trim();
+
+  let visible = 0;
+
+  document.querySelectorAll(".card").forEach(card => {
+    const matchesSearch =
+      card.textContent.toLowerCase().includes(search);
+
+    const matchesCategory =
+      currentCategory === "all" ||
+      card.dataset.category === currentCategory;
+
+    const show = matchesSearch && matchesCategory;
+
+    card.style.display = show ? "flex" : "none";
+
+    if (show) visible++;
   });
-});
+
+  document.getElementById("empty").hidden = visible > 0;
+}
 </script>
+
 </body>
 </html>

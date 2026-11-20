@@ -2,49 +2,88 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>مكتبة اختصارات OIXS27</title>
 
 <style>
-* { box-sizing: border-box; }
+* {
+  box-sizing: border-box;
+}
 
 body {
   margin: 0;
-  background: #0b1020;
+  padding: 20px;
+  background: #081426;
   color: white;
   font-family: Arial, sans-serif;
-  text-align: center;
 }
 
 header {
-  background: #151d32;
-  padding: 30px 15px;
-  border-bottom: 2px solid #eab308;
+  text-align: center;
+  padding: 30px 10px;
 }
 
-h1, h2 { color: #facc15; }
+h1 {
+  color: #ffd54f;
+  font-size: 28px;
+}
+
+.subtitle {
+  color: #b8c6dc;
+  line-height: 1.8;
+}
+
+.container {
+  max-width: 650px;
+  margin: auto;
+}
 
 .card {
-  background: #1e293b;
-  margin: 20px;
-  padding: 25px 15px;
+  background: #142540;
+  border: 1px solid #304766;
   border-radius: 18px;
+  padding: 22px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.icon {
+  font-size: 40px;
+  margin-bottom: 12px;
+}
+
+.card h2 {
+  color: white;
+  font-size: 22px;
+}
+
+.card p {
+  color: #c3cee0;
+  font-size: 15px;
 }
 
 .btn {
   display: block;
-  background: #eab308;
-  color: #111827;
-  padding: 17px 10px;
-  margin-top: 15px;
+  background: #ffd54f;
+  color: #101827;
+  padding: 15px;
+  margin-top: 20px;
   border-radius: 12px;
   text-decoration: none;
+  font-size: 17px;
   font-weight: bold;
 }
 
+.btn:active {
+  background: #ffbd21;
+}
+
 footer {
-  padding: 25px;
-  color: #cbd5e1;
+  text-align: center;
+  color: #9eacc2;
+  padding: 30px 10px;
+  font-size: 14px;
 }
 </style>
 </head>
@@ -53,61 +92,73 @@ footer {
 
 <header>
   <h1>📱 مكتبة اختصارات OIXS27</h1>
-  <p>اختصارات iPhone مجانية ومفيدة</p>
+  <p class="subtitle">
+    مرحبًا بك في مكتبة اختصارات الآيفون
+    <br>
+    اختر الاختصار واضغط على زر الإضافة
+  </p>
 </header>
 
-<!-- مكتبة اختصارات OIXS27 -->
+<main class="container">
 
-<section class="card">
-  <h2>📱 مكتبة اختصارات OIXS27</h2>
-  <p>اختصارات مجانية ومفيدة للآيفون</p>
-</section>
+<!-- إدارة أدوات -->
 
-<section class="card">
-  <h2>🔄 تحديث نظام iPhone</h2>
+<div class="card">
+  <div class="icon">🛠️</div>
+
+  <h2>إدارة أدوات</h2>
+
+  <p>اختصار إدارة الأدوات</p>
+
   <a class="btn"
-     href="https://www.icloud.com/shortcuts/f632f0f468114deeb1f65a14da582ced"
+     href="https://www.icloud.com/shortcuts/071ebf1c50d943daac0832060de6f378"
      target="_blank"
      rel="noopener noreferrer">
-    📲 إضافة اختصار تحديث النظام
+    📲 إضافة الاختصار
   </a>
-</section>
+</div>
 
-<section class="card">
-  <h2>💾 مساحة تخزين iPhone</h2>
+<!-- إخراج الماء -->
+
+<div class="card">
+  <div class="icon">💧</div>
+
+  <h2>إخراج الماء</h2>
+
+  <p>اختصار إخراج الماء</p>
+
+  <a class="btn"
+     href="https://www.icloud.com/shortcuts/59b9fec8a53f4bf2bd09549bc0359881"
+     target="_blank"
+     rel="noopener noreferrer">
+    📲 إضافة الاختصار
+  </a>
+</div>
+
+<!-- مساحة تخزين iPhone -->
+
+<div class="card">
+  <div class="icon">💾</div>
+
+  <h2>مساحة تخزين iPhone</h2>
+
+  <p>اختصار الوصول إلى مساحة تخزين الآيفون</p>
+
   <a class="btn"
      href="https://www.icloud.com/shortcuts/c99dbcbca3c74e38bcaaeaf27629380f"
      target="_blank"
      rel="noopener noreferrer">
-    📲 إضافة اختصار مساحة التخزين
+    📲 إضافة الاختصار
   </a>
-</section>
+</div>
 
-<section class="card">
-  <h2>📱 اختصارات جديدة</h2>
-  <p>قريبًا نضيف اختصارات أخرى</p>
-</section>
-
-
-<section class="card">
-  <a class="btn" href="index.html">
-    🏠 العودة للصفحة الرئيسية
-  </a>
-</section>
+</main>
 
 <footer>
-  <p>© 2026 OIXS27</p>
-  <p>🇸🇦 صنع في المملكة العربية السعودية</p>
+  🇸🇦 مكتبة اختصارات OIXS27
+  <br><br>
+  جميع الحقوق محفوظة © 2026
 </footer>
-<script>
-document.querySelectorAll('a.btn').forEach(button => {
-  button.addEventListener('click', () => {
-    if (!button.href.includes('icloud.com/shortcuts/')) return;
 
-    let count = Number(localStorage.getItem('shortcutClicks') || 0);
-    localStorage.setItem('shortcutClicks', count + 1);
-  });
-});
-</script>
 </body>
 </html>

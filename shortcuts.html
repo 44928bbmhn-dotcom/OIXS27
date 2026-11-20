@@ -1,29 +1,108 @@
-<!-- بطاقة إدارة أدوات -->
-<div class="card purple" data-category="tools">
-  <div>
-    <div class="icon">🛠️</div>
-    <h2>إدارة أدوات</h2>
-    <p>اختصار إدارة الأدوات</p>
-  </div>
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>مكتبة اختصارات OIXS27</title>
 
-  <a href="https://www.icloud.com/shortcuts/071ebf1c50d943daac0832060de6f378"
+<style>
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: #0b1020;
+  color: white;
+  font-family: Arial, sans-serif;
+  text-align: center;
+}
+
+header {
+  background: #151d32;
+  padding: 30px 15px;
+  border-bottom: 2px solid #eab308;
+}
+
+h1, h2 { color: #facc15; }
+
+.card {
+  background: #1e293b;
+  margin: 20px;
+  padding: 25px 15px;
+  border-radius: 18px;
+}
+
+.btn {
+  display: block;
+  background: #eab308;
+  color: #111827;
+  padding: 17px 10px;
+  margin-top: 15px;
+  border-radius: 12px;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+footer {
+  padding: 25px;
+  color: #cbd5e1;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>📱 مكتبة اختصارات OIXS27</h1>
+  <p>اختصارات iPhone مجانية ومفيدة</p>
+</header>
+
+<!-- مكتبة اختصارات OIXS27 -->
+
+<section class="card">
+  <h2>📱 مكتبة اختصارات OIXS27</h2>
+  <p>اختصارات مجانية ومفيدة للآيفون</p>
+</section>
+
+<section class="card">
+  <h2>🔄 تحديث نظام iPhone</h2>
+  <a class="btn"
+     href="https://www.icloud.com/shortcuts/f632f0f468114deeb1f65a14da582ced"
      target="_blank"
      rel="noopener noreferrer">
-    📲 إضافة الاختصار
+    📲 إضافة اختصار تحديث النظام
   </a>
-</div>
+</section>
 
-<!-- بطاقة إخراج الماء -->
-<div class="card purple" data-category="tools">
-  <div>
-    <div class="icon">💧</div>
-    <h2>إخراج الماء</h2>
-    <p>اختصار إخراج الماء</p>
-  </div>
-
-  <a href="https://www.icloud.com/shortcuts/59b9fec8a53f4bf2bd09549bc0359881"
+<section class="card">
+  <h2>💾 مساحة تخزين iPhone</h2>
+  <a class="btn"
+     href="https://www.icloud.com/shortcuts/c99dbcbca3c74e38bcaaeaf27629380f"
      target="_blank"
      rel="noopener noreferrer">
-    📲 إضافة الاختصار
+    📲 إضافة اختصار مساحة التخزين
   </a>
-</div>
+</section>
+
+<section class="card">
+  <h2>📱 اختصارات جديدة</h2>
+  <p>قريبًا نضيف اختصارات أخرى</p>
+</section>
+
+
+<section class="card">
+  <a class="btn" href="index.html">
+    🏠 العودة للصفحة الرئيسية
+  </a>
+</section>
+
+<footer>
+  <p>© 2026 OIXS27</p>
+  <p>🇸🇦 صنع في المملكة العربية السعودية</p>
+</footer>
+<script>
+document.querySelectorAll('a.btn').forEach(button => {
+  button.addEventListener('click', () => {
+    if (!button.href.includes('icloud.com/shortcuts/')) return;
+
+    let count = Number(localStorage.getItem('shortcutClicks') || 0);
+    

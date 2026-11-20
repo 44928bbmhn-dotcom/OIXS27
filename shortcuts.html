@@ -105,4 +105,9 @@ document.querySelectorAll('a.btn').forEach(button => {
     if (!button.href.includes('icloud.com/shortcuts/')) return;
 
     let count = Number(localStorage.getItem('shortcutClicks') || 0);
-    
+    localStorage.setItem('shortcutClicks', count + 1);
+  });
+});
+</script>
+</body>
+</html>

@@ -99,6 +99,15 @@ footer {
   <p>© 2026 OIXS27</p>
   <p>🇸🇦 صنع في المملكة العربية السعودية</p>
 </footer>
+<script>
+document.querySelectorAll('a.btn').forEach(button => {
+  button.addEventListener('click', () => {
+    if (!button.href.includes('icloud.com/shortcuts/')) return;
 
+    let count = Number(localStorage.getItem('shortcutClicks') || 0);
+    localStorage.setItem('shortcutClicks', count + 1);
+  });
+});
+</script>
 </body>
 </html>

@@ -378,7 +378,26 @@ footer p {
 <!-- ================================= -->
 <!-- نهاية الموقع -->
 <!-- ================================= -->
+<!-- 100 اختصار جديد -->
 
+<div id="new-shortcuts"></div>
+
+<script>
+const container = document.getElementById("new-shortcuts");
+
+for (let i = 1; i <= 100; i++) {
+  container.innerHTML += `
+    <div class="card">
+      <div class="icon">📱</div>
+      <h2>اسم الاختصار ${i}</h2>
+      <p>وصف الاختصار الجديد</p>
+      <a class="btn disabled" aria-disabled="true">
+        📲 قريباً
+      </a>
+    </div>
+  `;
+}
+</script>
 <footer>
 
   <p>🇸🇦 مكتبة اختصارات OIXS27</p>

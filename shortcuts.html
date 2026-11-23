@@ -1,44 +1,461 @@
-[
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>مكتبة اختصارات OIXS27</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #081426;
+  color: white;
+  font-family: Arial, sans-serif;
+  text-align: center;
+}
+
+header {
+  background: #142540;
+  padding: 30px 15px;
+}
+
+h1 {
+  color: #ffd54f;
+}
+
+main {
+  max-width: 800px;
+  margin: auto;
+  padding: 20px;
+}
+
+.card {
+  background: #142540;
+  border: 1px solid #304563;
+  border-radius: 20px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+input {
+  width: 100%;
+  padding: 15px;
+  margin: 10px 0;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+}
+
+button, .btn {
+  display: block;
+  width: 100%;
+  padding: 15px;
+  margin-top: 12px;
+  border: none;
+  border-radius: 12px;
+  background: #ffd54f;
+  color: #081426;
+  font-size: 17px;
+  font-weight: bold;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.delete {
+  background: #e53935;
+  color: white;
+}
+
+.secondary {
+  background: #455468;
+  color: white;
+}
+
+.note {
+  color: #c4d0df;
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+footer {
+  padding: 25px;
+  color: #b8c5d9;
+}
+
+#status {
+  color: #ffd54f;
+  line-height: 1.8;
+}
+
+textarea {
+  width: 100%;
+  min-height: 140px;
+  margin-top: 12px;
+  padding: 12px;
+  border-radius: 10px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>🇸🇦 مكتبة اختصارات OIXS27</h1>
+  <p>اختصارات مفيدة لجهاز iPhone</p>
+</header>
+
+<main>
+
+<section class="card">
+  <h2>➕ إضافة اختصار جديد</h2>
+
+  <input
+    id="shortcutName"
+    type="text"
+    placeholder="اكتب اسم الاختصار"
+  >
+
+  <input
+    id="shortcutLink"
+    type="url"
+    placeholder="الصق رابط iCloud"
+  >
+
+  <button onclick="addShortcut()">
+    💾 حفظ الاختصار
+  </button>
+
+  <p id="status"></p>
+</section>
+
+<section class="card">
+  <h2>📦 النسخ الاحتياطي</h2>
+
+  <button class="secondary" onclick="exportShortcuts()">
+    📋 نسخ الاختصارات المضافة
+  </button>
+
+  <button class="secondary" onclick="showImport()">
+    📥 استعادة الاختصارات
+  </button>
+
+  <div id="importArea" hidden>
+    <textarea
+      id="importText"
+      placeholder="الصق النسخة الاحتياطية هنا"
+    ></textarea>
+
+    <button onclick="importShortcuts()">
+      ✅ استعادة
+    </button>
+  </div>
+
+  <p class="note">
+    احتفظ بنسخة احتياطية من اختصاراتك.
+    الإضافات تُحفظ على هذا المتصفح.
+  </p>
+</section>
+
+<h2>📱 الاختصارات</h2>
+
+<div id="shortcutsList"></div>
+
+</main>
+
+<footer>
+  <p>🇸🇦 مكتبة اختصارات OIXS27</p>
+  <p>جميع الحقوق محفوظة © 2026</p>
+  <p>💳 الدفع الإلكتروني — قريباً</p>
+</footer>
+
+<script>
+
+const originalShortcuts = [
   {
-    "name": "اشتراكات Apple",
-    "description": "اختصار الوصول إلى اشتراكات Apple وإدارتها",
-    "icon": "🍎",
-    "link": "https://www.icloud.com/shortcuts/2b387c04359044f681f819615cfdd385"
+    name: "اشتراكات Apple",
+    icon: "🍎",
+    link: "https://www.icloud.com/shortcuts/2b387c04359044f681f819615cfdd385"
   },
   {
-    "name": "إدارة أدوات",
-    "description": "اختصار إدارة الأدوات",
-    "icon": "🛠️",
-    "link": "https://www.icloud.com/shortcuts/071ebf1c50d943daac0832060de6f378"
+    name: "إدارة أدوات",
+    icon: "🛠️",
+    link: "https://www.icloud.com/shortcuts/071ebf1c50d943daac0832060de6f378"
   },
   {
-    "name": "إخراج الماء",
-    "description": "اختصار تشغيل صوت للمساعدة في إخراج الماء من السماعة",
-    "icon": "💧",
-    "link": "https://www.icloud.com/shortcuts/59b9fec8a53f4bf2bd09549bc0359881"
+    name: "إخراج الماء",
+    icon: "💧",
+    link: "https://www.icloud.com/shortcuts/59b9fec8a53f4bf2bd09549bc0359881"
   },
   {
-    "name": "مساحة تخزين iPhone",
-    "description": "اختصار الوصول إلى معلومات مساحة التخزين",
-    "icon": "💾",
-    "link": "https://www.icloud.com/shortcuts/c99dbcbca3c74e38bcaaeaf27629380f"
+    name: "مساحة تخزين iPhone",
+    icon: "💾",
+    link: "https://www.icloud.com/shortcuts/c99dbcbca3c74e38bcaaeaf27629380f"
   },
   {
-    "name": "إيقاف وتشغيل",
-    "description": "اختصار إيقاف وتشغيل على iPhone",
-    "icon": "🔄",
-    "link": "https://www.icloud.com/shortcuts/6aea6f24281441dbbe95725a59c90e24"
+    name: "إيقاف وتشغيل",
+    icon: "🔄",
+    link: "https://www.icloud.com/shortcuts/6aea6f24281441dbbe95725a59c90e24"
   },
   {
-    "name": "التعبئة التلقائية وكلمات السر",
-    "description": "اختصار للوصول إلى إعدادات التعبئة التلقائية وكلمات السر في iPhone",
-    "icon": "⌨️",
-    "link": "https://www.icloud.com/shortcuts/8f7fa789752648a089cdc1fde4323880"
+    name: "التعبئة التلقائية وكلمات السر",
+    icon: "🔐",
+    link: "https://www.icloud.com/shortcuts/8f7fa789752648a089cdc1fde4323880"
   },
   {
-    "name": "جهة اتصال استرداد حساب Apple",
-    "description": "اختصار لإضافة جهة اتصال استرداد لحساب Apple",
-    "icon": "📱",
-    "link": "https://www.icloud.com/shortcuts/873e78832cbd449fa43ea2c3e500a66c"
+    name: "جهة اتصال استرداد Apple",
+    icon: "📱",
+    link: "https://www.icloud.com/shortcuts/873e78832cbd449fa43ea2c3e500a66c"
   }
-]
+];
+
+const STORAGE_KEY = "OIXS27_MY_SHORTCUTS_V2";
+
+let myShortcuts = [];
+
+function validLink(link) {
+  return /^https:\/\/www\.icloud\.com\/shortcuts\/[a-f0-9]{32}\/?$/i.test(link);
+}
+
+function loadShortcuts() {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    const data = saved ? JSON.parse(saved) : [];
+
+    myShortcuts = Array.isArray(data) ? data : [];
+  } catch (error) {
+    myShortcuts = [];
+    showStatus("⚠️ تعذر قراءة الاختصارات المحفوظة");
+  }
+
+  renderShortcuts();
+}
+
+function saveShortcuts() {
+  try {
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify(myShortcuts)
+    );
+
+    return true;
+  } catch (error) {
+    showStatus("⚠️ تعذر الحفظ في المتصفح");
+    return false;
+  }
+}
+
+function showStatus(message) {
+  document.getElementById("status").textContent = message;
+}
+
+function createCard(item, index, removable) {
+  const card = document.createElement("div");
+  card.className = "card";
+
+  const title = document.createElement("h2");
+  title.textContent = (item.icon || "📱") + " " + item.name;
+
+  const link = document.createElement("a");
+  link.className = "btn";
+  link.href = item.link;
+  link.target = "_blank";
+  link.rel = "noopener noreferrer";
+  link.textContent = "📲 إضافة الاختصار";
+
+  card.appendChild(title);
+  card.appendChild(link);
+
+  if (removable) {
+    const del = document.createElement("button");
+    del.className = "delete";
+    del.textContent = "🗑️ حذف الاختصار";
+
+    del.addEventListener("click", function() {
+      deleteShortcut(index);
+    });
+
+    card.appendChild(del);
+  }
+
+  return card;
+}
+
+function renderShortcuts() {
+  const list = document.getElementById("shortcutsList");
+
+  list.replaceChildren();
+
+  originalShortcuts.forEach(function(item) {
+    list.appendChild(
+      createCard(item, -1, false)
+    );
+  });
+
+  myShortcuts.forEach(function(item, index) {
+    list.appendChild(
+      createCard(item, index, true)
+    );
+  });
+}
+
+function addShortcut() {
+  const name = document
+    .getElementById("shortcutName")
+    .value.trim();
+
+  const link = document
+    .getElementById("shortcutLink")
+    .value.trim();
+
+  if (!name) {
+    showStatus("⚠️ اكتب اسم الاختصار");
+    return;
+  }
+
+  if (!validLink(link)) {
+    showStatus("⚠️ رابط iCloud غير صحيح");
+    return;
+  }
+
+  const all = originalShortcuts.concat(myShortcuts);
+
+  if (all.some(function(item) {
+    return item.link === link;
+  })) {
+    showStatus("⚠️ هذا الاختصار موجود بالفعل");
+    return;
+  }
+
+  const updated = myShortcuts.concat({
+    name: name,
+    icon: "📱",
+    link: link
+  });
+
+  const previous = myShortcuts;
+
+  myShortcuts = updated;
+
+  if (!saveShortcuts()) {
+    myShortcuts = previous;
+    return;
+  }
+
+  renderShortcuts();
+
+  document.getElementById("shortcutName").value = "";
+  document.getElementById("shortcutLink").value = "";
+
+  showStatus("✅ تم حفظ الاختصار على هذا الجهاز");
+}
+
+function deleteShortcut(index) {
+  const item = myShortcuts[index];
+
+  if (!item) return;
+
+  const confirmed = confirm(
+    "هل تريد حذف الاختصار: " + item.name + "؟"
+  );
+
+  if (!confirmed) return;
+
+  const previous = myShortcuts;
+
+  myShortcuts = myShortcuts.filter(function(_, i) {
+    return i !== index;
+  });
+
+  if (!saveShortcuts()) {
+    myShortcuts = previous;
+    return;
+  }
+
+  renderShortcuts();
+  showStatus("✅ تم حذف الاختصار");
+}
+
+async function exportShortcuts() {
+  const data = JSON.stringify(myShortcuts, null, 2);
+
+  try {
+    await navigator.clipboard.writeText(data);
+    showStatus("✅ تم نسخ الاختصارات");
+  } catch (error) {
+    const area = document.getElementById("importArea");
+    const field = document.getElementById("importText");
+
+    area.hidden = false;
+    field.value = data;
+    field.focus();
+    field.select();
+
+    showStatus("📋 انسخ النص الظاهر واحتفظ به");
+  }
+}
+
+function showImport() {
+  const area = document.getElementById("importArea");
+  area.hidden = !area.hidden;
+}
+
+function importShortcuts() {
+  const text = document
+    .getElementById("importText")
+    .value.trim();
+
+  try {
+    const data = JSON.parse(text);
+
+    if (!Array.isArray(data)) {
+      throw new Error("Invalid data");
+    }
+
+    const valid = data.every(function(item) {
+      return (
+        item &&
+        typeof item.name === "string" &&
+        item.name.trim() &&
+        typeof item.link === "string" &&
+        validLink(item.link)
+      );
+    });
+
+    if (!valid) {
+      throw new Error("Invalid shortcuts");
+    }
+
+    const previous = myShortcuts;
+
+    myShortcuts = data.map(function(item) {
+      return {
+        name: item.name,
+        icon: item.icon || "📱",
+        link: item.link
+      };
+    });
+
+    if (!saveShortcuts()) {
+      myShortcuts = previous;
+      return;
+    }
+
+    renderShortcuts();
+    showStatus("✅ تمت استعادة الاختصارات");
+
+    document.getElementById("importArea").hidden = true;
+  } catch (error) {
+    showStatus("⚠️ بيانات النسخة الاحتياطية غير صحيحة");
+  }
+}
+
+loadShortcuts();
+
+</script>
+
+</body>
+</html>

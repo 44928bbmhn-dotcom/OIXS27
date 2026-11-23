@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>خلفيات OIXS27</title>
+<style>
+body {
+  background: #081426;
+  color: white;
+  font-family: Arial, sans-serif;
+  text-align: center;
+  margin: 0;
+  padding: 20px;
+}
+h1 { color: #ffda55; }
+.card {
+  background: #172844;
+  padding: 20px;
+  margin: 20px 0;
+  border-radius: 20px;
+}
+.wallpaper {
+  height: 230px;
+  border-radius: 16px;
+  margin-bottom: 15px;
+}
+.w1 { background: linear-gradient(135deg,#004e92,#000428); }
+.w2 { background: linear-gradient(135deg,#ff512f,#dd2476); }
+.w3 { background: linear-gradient(135deg,#11998e,#38ef7d); }
+.w4 { background: linear-gradient(135deg,#654ea3,#eaafc8); }
+button, a {
+  display: inline-block;
+  background: #ffda55;
+  color: #111;
+  padding: 14px 18px;
+  border: 0;
+  border-radius: 12px;
+  font-weight: bold;
+  text-decoration: none;
+  margin: 5px;
+}
+.back { background: #455468; color: white; }
+footer { margin-top: 35px; color: #aaa; }
+</style>
+</head>
+<body>
+
+<h1>📱 خلفيات OIXS27</h1>
+<p>خلفيات مميزة لجوالك</p>
+
+<div id="gallery"></div>
+
+<a class="back" href="1.html">⬅️ العودة للرئيسية</a>
+
+<footer>OIXS27 © 2026</footer>
+
+<script>
+const gallery = document.getElementById("gallery");
+
+for (let i = 1; i <= 4; i++) {
+  gallery.innerHTML += `
+    <div class="card">
+      <h2>خلفية رقم ${i}</h2>
+      <div class="wallpaper w${i}"></div>
+      <button onclick="downloadWallpaper(${i})">
+        📥 حفظ الخلفية
+      </button>
+    </div>
+  `;
+}
+
+function downloadWallpaper(i) {
+  const colors = [
+    ["#004e92","#000428"],
+    ["#ff512f","#dd2476"],
+    ["#11998e","#38ef7d"],
+    ["#654ea3","#eaafc8"]
+  ];
+
+  const canvas = document.createElement("canvas");
+  canvas.width = 1170;
+  canvas.height = 2532;
+
+  const ctx = canvas.getContext("2d");
+  const gradient = ctx.createLinearGradient(
+    0,0,1170,2532
+  );
+
+  gradient.addColorStop(0,colors[i-1][0]);
+  gradient.addColorStop(1,colors[i-1][1]);
+
+  ctx.fillStyle = gradient;
+  ctx.fillRect(0,0,1170,2532);
+
+  const link = document.createElement("a");
+  link.download = "OIXS27-wallpaper-" + i + ".png";
+  link.href = canvas.toDataURL("image/png");
+  link.click();
+}
+</script>
+
+</body>
+</html>

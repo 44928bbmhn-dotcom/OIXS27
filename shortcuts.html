@@ -465,7 +465,28 @@ function showShortcuts() {
     a.target = "_blank";
     a.rel = "noopener noreferrer";
     box.appendChild(a);
-  });
+  const del = document.createElement("button");
+del.textContent = "🗑️ حذف";
+del.style.marginTop = "8px";
+del.style.padding = "10px 20px";
+del.style.background = "#e53935";
+del.style.color = "white";
+del.style.border = "none";
+del.style.borderRadius = "10px";
+
+del.onclick = function() {
+  if (confirm("هل تريد حذف هذا الاختصار؟")) {
+    const saved = JSON.parse(localStorage.getItem("myShortcuts") || "[]");
+    const index = saved.findIndex(x => x.name === item.name && x.link === item.link);
+    if (index !== -1) {
+      saved.splice(index, 1);
+      localStorage.setItem("myShortcuts", JSON.stringify(saved));
+      showShortcuts();
+    }
+  }
+};
+
+box.appendChild(del);
 }
 
 showShortcuts();

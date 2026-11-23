@@ -1,4 +1,45 @@
-[
+[[
+  {
+    "name": "اشتراكات Apple",
+    "icon": "🍎",
+    "link": "https://www.icloud.com/shortcuts/2b387c04359044f681f819615cfdd385"
+  },
+  {
+    "name": "إدارة أدوات",
+    "icon": "🛠️",
+    "link": "https://www.icloud.com/shortcuts/071ebf1c50d943daac0832060de6f378"
+  },
+  {
+    "name": "إخراج الماء",
+    "icon": "💧",
+    "link": "https://www.icloud.com/shortcuts/59b9fec8a53f4bf2bd09549bc0359881"
+  },
+  {
+    "name": "مساحة تخزين iPhone",
+    "icon": "💾",
+    "link": "https://www.icloud.com/shortcuts/c99dbcbca3c74e38bcaaeaf27629380f"
+  },
+  {
+    "name": "إيقاف وتشغيل",
+    "icon": "🔄",
+    "link": "https://www.icloud.com/shortcuts/6aea6f24281441dbbe95725a59c90e24"
+  },
+  {
+    "name": "التعبئة التلقائية وكلمات السر",
+    "icon": "🔐",
+    "link": "https://www.icloud.com/shortcuts/8f7fa789752648a089cdc1fde4323880"
+  },
+  {
+    "name": "جهة اتصال استرداد Apple",
+    "icon": "📱",
+    "link": "https://www.icloud.com/shortcuts/873e78832cbd449fa43ea2c3e500a66c"
+  },
+  {
+    "name": "R⤓Download",
+    "icon": "📱",
+    "link": "https://www.icloud.com/shortcuts/6f229a647a2a45009490f17390c342a1"
+  }
+]
   {
     "name": "اشتراكات Apple",
     "icon": "🍎",

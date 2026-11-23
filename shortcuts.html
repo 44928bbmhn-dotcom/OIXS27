@@ -1,42 +1,424 @@
-[
-  {
-    "name": "اشتراكات Apple",
-    "icon": "🍎",
-    "link": "https://www.icloud.com/shortcuts/2b387c04359044f681f819615cfdd385"
-  },
-  {
-    "name": "إدارة أدوات",
-    "icon": "🛠️",
-    "link": "https://www.icloud.com/shortcuts/071ebf1c50d943daac0832060de6f378"
-  },
-  {
-    "name": "إخراج الماء",
-    "icon": "💧",
-    "link": "https://www.icloud.com/shortcuts/59b9fec8a53f4bf2bd09549bc0359881"
-  },
-  {
-    "name": "مساحة تخزين iPhone",
-    "icon": "📱",
-    "link": "https://www.icloud.com/shortcuts/c99dbcbca3c74e38bcaaeaf27629380f"
-  },
-  {
-    "name": "إيقاف وتشغيل",
-    "icon": "🔄",
-    "link": "https://www.icloud.com/shortcuts/6aea6f24281441dbbe95725a59c90e24"
-  },
-  {
-    "name": "التعبئة التلقائية وكلمات السر",
-    "icon": "🔐",
-    "link": "https://www.icloud.com/shortcuts/8f7fa789752648a089cdc1fde4323880"
-  },
-  {
-    "name": "جهة اتصال استرداد Apple",
-    "icon": "📲",
-    "link": "https://www.icloud.com/shortcuts/873e78832cbd449fa43ea2c3e500a66c"
-  },
-  {
-    "name": "منصة العمل الحر السعودية",
-    "icon": "💼",
-    "link": "https://www.icloud.com/shortcuts/22c0ed8b51d140feb9801b9ef40d4ffb"
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OIXS27 | مكتبة الاختصارات</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #081426;
+  color: white;
+  font-family: Arial, sans-serif;
+  text-align: center;
+}
+
+header {
+  background: #142540;
+  padding: 30px 15px;
+}
+
+h1 {
+  color: #ffd54f;
+}
+
+main {
+  max-width: 700px;
+  margin: auto;
+  padding: 20px;
+}
+
+.card {
+  background: #142540;
+  border: 1px solid #344b6d;
+  border-radius: 20px;
+  padding: 25px 20px;
+  margin-bottom: 20px;
+}
+
+input {
+  width: 100%;
+  padding: 17px;
+  margin: 10px 0;
+  border: none;
+  border-radius: 12px;
+  font-size: 17px;
+  direction: rtl;
+}
+
+button, .btn {
+  display: block;
+  width: 100%;
+  padding: 17px;
+  margin-top: 12px;
+  border: none;
+  border-radius: 12px;
+  background: #ffd54f;
+  color: #081426;
+  font-size: 18px;
+  font-weight: bold;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.secondary {
+  background: #455468;
+  color: white;
+}
+
+.danger {
+  background: #b93d47;
+  color: white;
+}
+
+.shortcut {
+  background: #1b3050;
+  padding: 18px;
+  border-radius: 15px;
+  margin: 12px 0;
+}
+
+.shortcut h3 {
+  overflow-wrap: anywhere;
+}
+
+#status {
+  color: #ffd54f;
+  line-height: 1.8;
+}
+
+textarea {
+  width: 100%;
+  height: 180px;
+  margin-top: 15px;
+  padding: 15px;
+  border-radius: 12px;
+  font-size: 14px;
+  direction: ltr;
+  text-align: left;
+}
+
+.note {
+  color: #cbd5e1;
+  line-height: 1.9;
+}
+
+footer {
+  padding: 30px 15px;
+  color: #b8c7db;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>🇸🇦 OIXS27</h1>
+  <p>مكتبة اختصارات iPhone</p>
+</header>
+
+<main>
+
+<section class="card">
+  <h2>➕ إضافة اختصار جديد</h2>
+
+  <input
+    id="shortcutName"
+    placeholder="اكتب اسم الاختصار"
+  >
+
+  <input
+    id="shortcutLink"
+    placeholder="الصق رابط الاختصار من iCloud"
+    dir="ltr"
+  >
+
+  <button onclick="addShortcut()">
+    ➕ إضافة الاختصار
+  </button>
+
+  <p id="status" role="status"></p>
+</section>
+
+<section class="card">
+  <h2>📱 مكتبة الاختصارات</h2>
+
+  <div id="shortcutList">
+    جارٍ تحميل الاختصارات...
+  </div>
+
+  <button class="secondary" onclick="loadShortcuts()">
+    🔄 تحديث قائمة الاختصارات
+  </button>
+</section>
+
+<section class="card" id="saveArea" hidden>
+  <h2>💾 حفظ التعديلات في GitHub</h2>
+
+  <p class="note">
+    انسخ البيانات الجديدة، ثم افتح ملف
+    shortcuts.json في GitHub
+    واستبدل محتواه بها، واضغط Commit changes.
+  </p>
+
+  <button onclick="copyData()">
+    📋 نسخ بيانات الاختصارات
+  </button>
+
+  <textarea
+    id="jsonOutput"
+    readonly
+    aria-label="بيانات الاختصارات"
+  ></textarea>
+
+  <a
+    class="btn secondary"
+    href="https://github.com/44928bbmhn-dotcom/OIXS27/edit/main/shortcuts.json"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    🔧 فتح ملف shortcuts.json في GitHub
+  </a>
+
+  <p class="note">
+    بعد الحفظ في GitHub، ارجع للموقع واضغط
+    تحديث قائمة الاختصارات.
+  </p>
+</section>
+
+</main>
+
+<footer>
+  🇸🇦 مكتبة اختصارات OIXS27
+  <p>جميع الحقوق محفوظة © 2026</p>
+  <p>💳 الدفع الإلكتروني — قريباً</p>
+</footer>
+
+<script>
+let shortcuts = [];
+let pendingChanges = false;
+
+const listElement =
+  document.getElementById("shortcutList");
+
+const statusElement =
+  document.getElementById("status");
+
+const outputElement =
+  document.getElementById("jsonOutput");
+
+const saveArea =
+  document.getElementById("saveArea");
+
+function showStatus(message) {
+  statusElement.textContent = message;
+}
+
+function validLink(link) {
+  return /^https:\/\/www\.icloud\.com\/shortcuts\/[a-f0-9]{32}\/?$/i.test(link);
+}
+
+function showShortcuts() {
+  listElement.innerHTML = "";
+
+  if (shortcuts.length === 0) {
+    listElement.textContent =
+      "لا توجد اختصارات حالياً.";
+    return;
   }
-]
+
+  shortcuts.forEach((item, index) => {
+    const card = document.createElement("div");
+    card.className = "shortcut";
+
+    const title = document.createElement("h3");
+    title.textContent =
+      (item.icon || "📱") + " " + item.name;
+
+    const link = document.createElement("a");
+    link.className = "btn";
+    link.textContent = "📥 الحصول على الاختصار";
+    link.href = item.link;
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+
+    const deleteButton =
+      document.createElement("button");
+
+    deleteButton.className = "danger";
+    deleteButton.textContent = "🗑️ حذف الاختصار";
+
+    deleteButton.onclick = function() {
+      deleteShortcut(index);
+    };
+
+    card.appendChild(title);
+    card.appendChild(link);
+    card.appendChild(deleteButton);
+
+    listElement.appendChild(card);
+  });
+}
+
+function prepareSave() {
+  pendingChanges = true;
+
+  outputElement.value =
+    JSON.stringify(shortcuts, null, 2);
+
+  saveArea.hidden = false;
+
+  showShortcuts();
+
+  showStatus(
+    "✅ تم تجهيز التعديلات. انسخ البيانات واحفظها في GitHub حتى تصبح دائمة."
+  );
+}
+
+function addShortcut() {
+  const name =
+    document.getElementById("shortcutName")
+      .value.trim();
+
+  const link =
+    document.getElementById("shortcutLink")
+      .value.trim();
+
+  if (!name || !link) {
+    showStatus(
+      "⚠️ اكتب اسم الاختصار والصق رابطه."
+    );
+    return;
+  }
+
+  if (!validLink(link)) {
+    showStatus(
+      "⚠️ رابط الاختصار غير صحيح. استخدم رابط مشاركة iCloud الكامل."
+    );
+    return;
+  }
+
+  shortcuts.push({
+    name: name,
+    icon: "📱",
+    link: link
+  });
+
+  document.getElementById("shortcutName")
+    .value = "";
+
+  document.getElementById("shortcutLink")
+    .value = "";
+
+  prepareSave();
+}
+
+function deleteShortcut(index) {
+  if (!confirm("هل تريد حذف هذا الاختصار؟")) {
+    return;
+  }
+
+  shortcuts.splice(index, 1);
+  prepareSave();
+}
+
+async function copyData() {
+  const data = outputElement.value;
+
+  try {
+    await navigator.clipboard.writeText(data);
+
+    showStatus(
+      "✅ تم نسخ البيانات. افتح shortcuts.json والصقها ثم احفظ التغييرات."
+    );
+  } catch (error) {
+    outputElement.focus();
+    outputElement.select();
+
+    showStatus(
+      "حدد البيانات في المربع وانسخها، ثم الصقها في GitHub."
+    );
+  }
+}
+
+async function loadShortcuts() {
+  if (
+    pendingChanges &&
+    !confirm(
+      "لديك تعديلات لم تؤكد حفظها في GitHub. هل تريد إعادة تحميل القائمة؟"
+    )
+  ) {
+    return;
+  }
+
+  showStatus("جارٍ تحميل الاختصارات...");
+
+  try {
+    const response = await fetch(
+      "./shortcuts.json?v=" + Date.now(),
+      { cache: "no-store" }
+    );
+
+    if (!response.ok) {
+      throw new Error(
+        "تعذر فتح ملف shortcuts.json"
+      );
+    }
+
+    const data = await response.json();
+
+    if (!Array.isArray(data)) {
+      throw new Error(
+        "محتوى shortcuts.json يجب أن يكون قائمة."
+      );
+    }
+
+    const cleanData = data.map(item => ({
+      name: String(item.name || ""),
+      icon: String(item.icon || "📱"),
+      link: String(item.link || "")
+    }));
+
+    if (
+      cleanData.some(
+        item => !item.name || !validLink(item.link)
+      )
+    ) {
+      throw new Error(
+        "بعض أسماء الاختصارات أو روابطها غير صحيحة."
+      );
+    }
+
+    shortcuts = cleanData;
+    pendingChanges = false;
+
+    saveArea.hidden = true;
+    showShortcuts();
+
+    showStatus(
+      "✅ تم تحميل " +
+      shortcuts.length +
+      " اختصارات بنجاح."
+    );
+
+  } catch (error) {
+    listElement.textContent =
+      "⚠️ تعذر تحميل الاختصارات.";
+
+    showStatus(
+      "⚠️ " + error.message +
+      " تأكد من حفظ shortcuts.json في نفس مجلد shortcuts.html."
+    );
+  }
+}
+
+loadShortcuts();
+</script>
+
+</body>
+</html>

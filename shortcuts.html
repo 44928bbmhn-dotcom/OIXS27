@@ -12,33 +12,53 @@
 
 body {
   margin: 0;
-  background: #081426;
-  color: white;
   font-family: Arial, sans-serif;
-  text-align: center;
+  color: white;
+  background: linear-gradient(
+    160deg,
+    #06101f,
+    #10294b,
+    #071426
+  );
+  min-height: 100vh;
 }
 
 header {
-  background: #142540;
-  padding: 30px 15px;
+  padding: 38px 15px;
+  text-align: center;
+  background: #10213d;
+  border-bottom: 2px solid #ffd54f;
 }
 
 h1 {
   color: #ffd54f;
+  font-size: 38px;
+  margin: 0;
+}
+
+header p {
+  color: #c4d4e8;
+  font-size: 17px;
 }
 
 main {
-  max-width: 700px;
+  max-width: 750px;
   margin: auto;
-  padding: 20px;
+  padding: 18px;
 }
 
 .card {
   background: #142540;
-  border: 1px solid #344b6d;
-  border-radius: 20px;
-  padding: 25px 20px;
-  margin-bottom: 20px;
+  border: 1px solid #344d71;
+  border-radius: 22px;
+  padding: 22px;
+  margin-bottom: 22px;
+  box-shadow: 0 8px 25px #0003;
+}
+
+h2 {
+  text-align: center;
+  font-size: 23px;
 }
 
 input {
@@ -48,13 +68,14 @@ input {
   border: none;
   border-radius: 12px;
   font-size: 17px;
-  direction: rtl;
+  background: white;
+  color: #142540;
 }
 
 button, .btn {
   display: block;
   width: 100%;
-  padding: 17px;
+  padding: 16px;
   margin-top: 12px;
   border: none;
   border-radius: 12px;
@@ -62,55 +83,60 @@ button, .btn {
   color: #081426;
   font-size: 18px;
   font-weight: bold;
-  text-decoration: none;
   cursor: pointer;
+  text-decoration: none;
+  text-align: center;
 }
 
 .secondary {
-  background: #455468;
+  background: #375476;
   color: white;
 }
 
 .danger {
-  background: #b93d47;
+  background: #8d3442;
   color: white;
 }
 
 .shortcut {
-  background: #1b3050;
-  padding: 18px;
+  background: #1d3656;
+  border: 1px solid #38577b;
   border-radius: 15px;
-  margin: 12px 0;
+  padding: 16px;
+  margin: 13px 0;
 }
 
 .shortcut h3 {
+  margin: 0 0 12px;
   overflow-wrap: anywhere;
+}
+
+.note {
+  color: #d3deef;
+  font-size: 14px;
+  line-height: 1.9;
 }
 
 #status {
   color: #ffd54f;
   line-height: 1.8;
+  overflow-wrap: anywhere;
 }
 
 textarea {
   width: 100%;
   height: 180px;
-  margin-top: 15px;
-  padding: 15px;
   border-radius: 12px;
-  font-size: 14px;
+  padding: 12px;
   direction: ltr;
   text-align: left;
-}
-
-.note {
-  color: #cbd5e1;
-  line-height: 1.9;
+  font-size: 13px;
 }
 
 footer {
-  padding: 30px 15px;
-  color: #b8c7db;
+  text-align: center;
+  padding: 30px;
+  color: #a8bdd6;
 }
 </style>
 </head>
@@ -119,7 +145,8 @@ footer {
 
 <header>
   <h1>🇸🇦 OIXS27</h1>
-  <p>مكتبة اختصارات iPhone</p>
+  <p>مكتبة الاختصارات الذكية</p>
+  <p>💙 تصميم جديد باللون الكحلي والذهبي 💛</p>
 </header>
 
 <main>
@@ -128,14 +155,14 @@ footer {
   <h2>➕ إضافة اختصار جديد</h2>
 
   <input
-    id="shortcutName"
+    id="name"
     placeholder="اكتب اسم الاختصار"
   >
 
   <input
-    id="shortcutLink"
+    id="link"
+    type="url"
     placeholder="الصق رابط الاختصار من iCloud"
-    dir="ltr"
   >
 
   <button onclick="addShortcut()">
@@ -146,48 +173,64 @@ footer {
 </section>
 
 <section class="card">
+  <h2>🔎 البحث عن اختصار</h2>
+
+  <input
+    id="search"
+    placeholder="ابحث باسم الاختصار"
+    oninput="renderShortcuts()"
+  >
+</section>
+
+<section class="card">
   <h2>📱 مكتبة الاختصارات</h2>
 
-  <div id="shortcutList">
-    جارٍ تحميل الاختصارات...
+  <p id="count" class="note"></p>
+
+  <div id="shortcutsList">
+    جاري تحميل الاختصارات...
   </div>
 
-  <button class="secondary" onclick="loadShortcuts()">
-    🔄 تحديث قائمة الاختصارات
+  <button
+    class="secondary"
+    onclick="loadShortcuts()"
+  >
+    🔄 تحديث القائمة
   </button>
 </section>
 
-<section class="card" id="saveArea" hidden>
-  <h2>💾 حفظ التعديلات في GitHub</h2>
+<section class="card">
+  <h2>💾 حفظ الاختصارات في GitHub</h2>
 
   <p class="note">
-    انسخ البيانات الجديدة، ثم افتح ملف
-    shortcuts.json في GitHub
-    واستبدل محتواه بها، واضغط Commit changes.
+    بعد إضافة أو حذف اختصار،
+    اضغط على تجهيز البيانات.
+    انسخ البيانات الجديدة والصقها
+    في ملف shortcuts.json داخل GitHub،
+    ثم اضغط Commit.
   </p>
 
-  <button onclick="copyData()">
-    📋 نسخ بيانات الاختصارات
+  <button onclick="prepareData()">
+    📋 تجهيز ونسخ بيانات الاختصارات
   </button>
 
   <textarea
     id="jsonOutput"
     readonly
-    aria-label="بيانات الاختصارات"
+    placeholder="ستظهر بيانات الاختصارات هنا"
   ></textarea>
 
-  <a
-    class="btn secondary"
-    href="https://github.com/44928bbmhn-dotcom/OIXS27/edit/main/shortcuts.json"
-    target="_blank"
-    rel="noopener noreferrer"
+  <button
+    class="secondary"
+    onclick="copyData()"
   >
-    🔧 فتح ملف shortcuts.json في GitHub
-  </a>
+    📋 نسخ البيانات
+  </button>
 
   <p class="note">
-    بعد الحفظ في GitHub، ارجع للموقع واضغط
-    تحديث قائمة الاختصارات.
+    تنبيه: الإضافة والحذف هنا للتجهيز والمعاينة.
+    لا تصبح التغييرات دائمة على الموقع
+    إلا بعد تحديث ملف GitHub.
   </p>
 </section>
 
@@ -195,168 +238,78 @@ footer {
 
 <footer>
   🇸🇦 مكتبة اختصارات OIXS27
-  <p>جميع الحقوق محفوظة © 2026</p>
-  <p>💳 الدفع الإلكتروني — قريباً</p>
+  <br><br>
+  جميع الحقوق محفوظة © 2026
+  <br><br>
+  💳 الدفع الإلكتروني — قريباً
 </footer>
 
 <script>
 let shortcuts = [];
-let pendingChanges = false;
+let changed = false;
 
 const listElement =
-  document.getElementById("shortcutList");
+  document.getElementById("shortcutsList");
 
 const statusElement =
   document.getElementById("status");
-
-const outputElement =
-  document.getElementById("jsonOutput");
-
-const saveArea =
-  document.getElementById("saveArea");
 
 function showStatus(message) {
   statusElement.textContent = message;
 }
 
-function validLink(link) {
-  return /^https:\/\/www\.icloud\.com\/shortcuts\/[a-f0-9]{32}\/?$/i.test(link);
-}
-
-function showShortcuts() {
-  listElement.innerHTML = "";
-
-  if (shortcuts.length === 0) {
-    listElement.textContent =
-      "لا توجد اختصارات حالياً.";
-    return;
-  }
-
-  shortcuts.forEach((item, index) => {
-    const card = document.createElement("div");
-    card.className = "shortcut";
-
-    const title = document.createElement("h3");
-    title.textContent =
-      (item.icon || "📱") + " " + item.name;
-
-    const link = document.createElement("a");
-    link.className = "btn";
-    link.textContent = "📥 الحصول على الاختصار";
-    link.href = item.link;
-    link.target = "_blank";
-    link.rel = "noopener noreferrer";
-
-    const deleteButton =
-      document.createElement("button");
-
-    deleteButton.className = "danger";
-    deleteButton.textContent = "🗑️ حذف الاختصار";
-
-    deleteButton.onclick = function() {
-      deleteShortcut(index);
-    };
-
-    card.appendChild(title);
-    card.appendChild(link);
-    card.appendChild(deleteButton);
-
-    listElement.appendChild(card);
-  });
-}
-
-function prepareSave() {
-  pendingChanges = true;
-
-  outputElement.value =
-    JSON.stringify(shortcuts, null, 2);
-
-  saveArea.hidden = false;
-
-  showShortcuts();
-
-  showStatus(
-    "✅ تم تجهيز التعديلات. انسخ البيانات واحفظها في GitHub حتى تصبح دائمة."
-  );
-}
-
-function addShortcut() {
-  const name =
-    document.getElementById("shortcutName")
-      .value.trim();
-
-  const link =
-    document.getElementById("shortcutLink")
-      .value.trim();
-
-  if (!name || !link) {
-    showStatus(
-      "⚠️ اكتب اسم الاختصار والصق رابطه."
-    );
-    return;
-  }
-
-  if (!validLink(link)) {
-    showStatus(
-      "⚠️ رابط الاختصار غير صحيح. استخدم رابط مشاركة iCloud الكامل."
-    );
-    return;
-  }
-
-  shortcuts.push({
-    name: name,
-    icon: "📱",
-    link: link
-  });
-
-  document.getElementById("shortcutName")
-    .value = "";
-
-  document.getElementById("shortcutLink")
-    .value = "";
-
-  prepareSave();
-}
-
-function deleteShortcut(index) {
-  if (!confirm("هل تريد حذف هذا الاختصار؟")) {
-    return;
-  }
-
-  shortcuts.splice(index, 1);
-  prepareSave();
-}
-
-async function copyData() {
-  const data = outputElement.value;
-
+function validLink(value) {
   try {
-    await navigator.clipboard.writeText(data);
+    const url = new URL(value);
 
-    showStatus(
-      "✅ تم نسخ البيانات. افتح shortcuts.json والصقها ثم احفظ التغييرات."
+    return (
+      url.protocol === "https:" &&
+      url.hostname === "www.icloud.com" &&
+      /^\/shortcuts\/[a-f0-9]{32}\/?$/i
+        .test(url.pathname)
     );
-  } catch (error) {
-    outputElement.focus();
-    outputElement.select();
-
-    showStatus(
-      "حدد البيانات في المربع وانسخها، ثم الصقها في GitHub."
-    );
+  } catch {
+    return false;
   }
+}
+
+function cleanItem(item) {
+  if (
+    !item ||
+    typeof item.name !== "string" ||
+    typeof item.link !== "string"
+  ) {
+    return null;
+  }
+
+  const name = item.name.trim();
+  const link = item.link.trim();
+
+  if (!name || !validLink(link)) {
+    return null;
+  }
+
+  return {
+    name: name,
+    icon:
+      typeof item.icon === "string"
+        ? item.icon
+        : "📱",
+    link: link
+  };
 }
 
 async function loadShortcuts() {
-  if (
-    pendingChanges &&
-    !confirm(
-      "لديك تعديلات لم تؤكد حفظها في GitHub. هل تريد إعادة تحميل القائمة؟"
-    )
-  ) {
-    return;
+  if (changed) {
+    const ok = confirm(
+      "عند التحديث ستفقد التعديلات التي لم تحفظها في GitHub. هل تريد المتابعة؟"
+    );
+
+    if (!ok) return;
   }
 
-  showStatus("جارٍ تحميل الاختصارات...");
+  listElement.textContent =
+    "جاري تحميل الاختصارات...";
 
   try {
     const response = await fetch(
@@ -366,7 +319,7 @@ async function loadShortcuts() {
 
     if (!response.ok) {
       throw new Error(
-        "تعذر فتح ملف shortcuts.json"
+        "تعذر فتح الملف: " + response.status
       );
     }
 
@@ -374,45 +327,210 @@ async function loadShortcuts() {
 
     if (!Array.isArray(data)) {
       throw new Error(
-        "محتوى shortcuts.json يجب أن يكون قائمة."
+        "يجب أن يحتوي الملف على قائمة تبدأ بـ [ وتنتهي بـ ]"
       );
     }
 
-    const cleanData = data.map(item => ({
-      name: String(item.name || ""),
-      icon: String(item.icon || "📱"),
-      link: String(item.link || "")
-    }));
+    const cleaned = data
+      .map(cleanItem)
+      .filter(Boolean);
 
-    if (
-      cleanData.some(
-        item => !item.name || !validLink(item.link)
-      )
-    ) {
-      throw new Error(
-        "بعض أسماء الاختصارات أو روابطها غير صحيحة."
+    shortcuts = cleaned;
+    changed = false;
+
+    renderShortcuts();
+
+    if (cleaned.length !== data.length) {
+      showStatus(
+        "⚠️ تم تجاهل بعض البيانات غير الصحيحة."
+      );
+    } else {
+      showStatus(
+        "✅ تم تحميل الاختصارات بنجاح."
       );
     }
-
-    shortcuts = cleanData;
-    pendingChanges = false;
-
-    saveArea.hidden = true;
-    showShortcuts();
-
-    showStatus(
-      "✅ تم تحميل " +
-      shortcuts.length +
-      " اختصارات بنجاح."
-    );
 
   } catch (error) {
     listElement.textContent =
       "⚠️ تعذر تحميل الاختصارات.";
 
     showStatus(
-      "⚠️ " + error.message +
-      " تأكد من حفظ shortcuts.json في نفس مجلد shortcuts.html."
+      "⚠️ راجع ملف shortcuts.json. " +
+      error.message
+    );
+  }
+}
+
+function addShortcut() {
+  const nameInput =
+    document.getElementById("name");
+
+  const linkInput =
+    document.getElementById("link");
+
+  const name = nameInput.value.trim();
+  const link = linkInput.value.trim();
+
+  if (!name) {
+    showStatus("⚠️ اكتب اسم الاختصار.");
+    return;
+  }
+
+  if (!validLink(link)) {
+    showStatus(
+      "⚠️ الصق رابط مشاركة صحيحًا من iCloud."
+    );
+    return;
+  }
+
+  const exists = shortcuts.some(
+    item => item.link === link
+  );
+
+  if (exists) {
+    showStatus(
+      "⚠️ هذا الاختصار موجود بالفعل."
+    );
+    return;
+  }
+
+  shortcuts.unshift({
+    name: name,
+    icon: "📱",
+    link: link
+  });
+
+  changed = true;
+
+  nameInput.value = "";
+  linkInput.value = "";
+
+  renderShortcuts();
+  prepareData();
+
+  showStatus(
+    "✅ تمت إضافة الاختصار للمعاينة. احفظ البيانات في GitHub لتثبيته."
+  );
+}
+
+function deleteShortcut(index) {
+  const item = shortcuts[index];
+
+  if (!item) return;
+
+  const ok = confirm(
+    "هل تريد حذف الاختصار: " +
+    item.name + "؟"
+  );
+
+  if (!ok) return;
+
+  shortcuts.splice(index, 1);
+  changed = true;
+
+  renderShortcuts();
+  prepareData();
+
+  showStatus(
+    "🗑️ تم الحذف من المعاينة. احفظ البيانات في GitHub لتثبيت الحذف."
+  );
+}
+
+function renderShortcuts() {
+  const search =
+    document.getElementById("search")
+      .value.trim().toLowerCase();
+
+  listElement.replaceChildren();
+
+  const filtered = shortcuts
+    .map((item, index) => ({
+      ...item,
+      originalIndex: index
+    }))
+    .filter(item =>
+      item.name.toLowerCase().includes(search)
+    );
+
+  document.getElementById("count")
+    .textContent =
+    "عدد الاختصارات: " + shortcuts.length;
+
+  if (filtered.length === 0) {
+    listElement.textContent =
+      "لا توجد اختصارات مطابقة.";
+    return;
+  }
+
+  filtered.forEach(item => {
+    const card =
+      document.createElement("div");
+
+    card.className = "shortcut";
+
+    const title =
+      document.createElement("h3");
+
+    title.textContent =
+      item.icon + " " + item.name;
+
+    const open =
+      document.createElement("a");
+
+    open.className = "btn";
+    open.href = item.link;
+    open.target = "_blank";
+    open.rel = "noopener noreferrer";
+    open.textContent = "📲 تحميل الاختصار";
+
+    const remove =
+      document.createElement("button");
+
+    remove.className = "danger";
+    remove.textContent = "🗑️ حذف";
+
+    remove.onclick = () =>
+      deleteShortcut(item.originalIndex);
+
+    card.append(title, open, remove);
+
+    listElement.appendChild(card);
+  });
+}
+
+function prepareData() {
+  const json = JSON.stringify(
+    shortcuts,
+    null,
+    2
+  );
+
+  document.getElementById(
+    "jsonOutput"
+  ).value = json;
+
+  return json;
+}
+
+async function copyData() {
+  const json = prepareData();
+
+  try {
+    await navigator.clipboard.writeText(json);
+
+    showStatus(
+      "✅ تم نسخ البيانات. الصقها في shortcuts.json ثم اضغط Commit."
+    );
+
+  } catch {
+    const output =
+      document.getElementById("jsonOutput");
+
+    output.focus();
+    output.select();
+
+    showStatus(
+      "📋 تم تحديد البيانات. اختر نسخ من قائمة التحديد."
     );
   }
 }

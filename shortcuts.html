@@ -41,13 +41,19 @@ main {
   margin-bottom: 20px;
 }
 
-input {
+input, textarea {
   width: 100%;
   padding: 15px;
   margin: 10px 0;
   border: none;
   border-radius: 10px;
   font-size: 16px;
+}
+
+textarea {
+  min-height: 180px;
+  direction: ltr;
+  text-align: left;
 }
 
 button, .btn {
@@ -78,6 +84,11 @@ button, .btn {
 .note {
   color: #c4d0df;
   font-size: 14px;
+  line-height: 1.9;
+}
+
+#status {
+  color: #ffd54f;
   line-height: 1.8;
 }
 
@@ -86,17 +97,8 @@ footer {
   color: #b8c5d9;
 }
 
-#status {
-  color: #ffd54f;
-  line-height: 1.8;
-}
-
-textarea {
-  width: 100%;
-  min-height: 140px;
-  margin-top: 12px;
-  padding: 12px;
-  border-radius: 10px;
+[hidden] {
+  display: none !important;
 }
 </style>
 </head>
@@ -122,47 +124,61 @@ textarea {
   <input
     id="shortcutLink"
     type="url"
-    placeholder="الصق رابط iCloud"
+    placeholder="الصق رابط الاختصار من iCloud"
   >
 
-  <button onclick="addShortcut()">
-    💾 حفظ الاختصار
+  <button id="addButton" onclick="addShortcut()">
+    ➕ إضافة الاختصار
   </button>
 
-  <p id="status"></p>
+  <p id="status" role="status"></p>
 </section>
 
-<section class="card">
-  <h2>📦 النسخ الاحتياطي</h2>
-
-  <button class="secondary" onclick="exportShortcuts()">
-    📋 نسخ الاختصارات المضافة
-  </button>
-
-  <button class="secondary" onclick="showImport()">
-    📥 استعادة الاختصارات
-  </button>
-
-  <div id="importArea" hidden>
-    <textarea
-      id="importText"
-      placeholder="الصق النسخة الاحتياطية هنا"
-    ></textarea>
-
-    <button onclick="importShortcuts()">
-      ✅ استعادة
-    </button>
-  </div>
+<section class="card" id="saveArea" hidden>
+  <h2>💾 حفظ التعديل في GitHub</h2>
 
   <p class="note">
-    احتفظ بنسخة احتياطية من اختصاراتك.
-    الإضافات تُحفظ على هذا المتصفح.
+    تم تجهيز بيانات الاختصارات الجديدة.
+    انسخها ثم افتح ملف shortcuts.json
+    في GitHub واستبدل محتواه بها.
+  </p>
+
+  <button onclick="copyData()">
+    📋 نسخ بيانات الاختصارات
+  </button>
+
+  <textarea
+    id="jsonOutput"
+    readonly
+    aria-label="بيانات الاختصارات"
+  ></textarea>
+
+  <a
+    class="btn secondary"
+    id="githubButton"
+    href="https://github.com"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    🔧 فتح GitHub لتأكيد الحفظ
+  </a>
+
+  <p class="note">
+    بعد لصق البيانات في shortcuts.json،
+    اضغط Commit في GitHub.
+    بعدها حدّث الموقع.
   </p>
 </section>
 
-<h2>📱 الاختصارات</h2>
+<h2>📱 مكتبة الاختصارات</h2>
 
-<div id="shortcutsList"></div>
+<div id="shortcutsList">
+  <p>⏳ جارٍ تحميل الاختصارات...</p>
+</div>
+
+<button class="secondary" onclick="reloadShortcuts()">
+  🔄 تحديث قائمة الاختصارات
+</button>
 
 </main>
 
@@ -174,102 +190,69 @@ textarea {
 
 <script>
 
-const originalShortcuts = [
-  {
-    name: "اشتراكات Apple",
-    icon: "🍎",
-    link: "https://www.icloud.com/shortcuts/2b387c04359044f681f819615cfdd385"
-  },
-  {
-    name: "إدارة أدوات",
-    icon: "🛠️",
-    link: "https://www.icloud.com/shortcuts/071ebf1c50d943daac0832060de6f378"
-  },
-  {
-    name: "إخراج الماء",
-    icon: "💧",
-    link: "https://www.icloud.com/shortcuts/59b9fec8a53f4bf2bd09549bc0359881"
-  },
-  {
-    name: "مساحة تخزين iPhone",
-    icon: "💾",
-    link: "https://www.icloud.com/shortcuts/c99dbcbca3c74e38bcaaeaf27629380f"
-  },
-  {
-    name: "إيقاف وتشغيل",
-    icon: "🔄",
-    link: "https://www.icloud.com/shortcuts/6aea6f24281441dbbe95725a59c90e24"
-  },
-  {
-    name: "التعبئة التلقائية وكلمات السر",
-    icon: "🔐",
-    link: "https://www.icloud.com/shortcuts/8f7fa789752648a089cdc1fde4323880"
-  },
-  {
-    name: "جهة اتصال استرداد Apple",
-    icon: "📱",
-    link: "https://www.icloud.com/shortcuts/873e78832cbd449fa43ea2c3e500a66c"
-  }
-];
+const FILE_NAME = "shortcuts.json";
 
-const STORAGE_KEY = "OIXS27_MY_SHORTCUTS_V2";
+/*
+  رابط تعديل الملف في GitHub.
+  إذا كان اسم حسابك مختلفاً،
+  يمكن تعديل الرابط لاحقاً.
+*/
+const GITHUB_EDIT_URL =
+  "https://github.com/44928bbmhn-dotcom/OIXS27/edit/main/shortcuts.json";
 
-let myShortcuts = [];
+let shortcuts = [];
+let pendingShortcuts = null;
+
+const list = document.getElementById("shortcutsList");
+const statusBox = document.getElementById("status");
+const saveArea = document.getElementById("saveArea");
+const jsonOutput = document.getElementById("jsonOutput");
+
+document.getElementById("githubButton").href =
+  GITHUB_EDIT_URL;
+
+function showStatus(message) {
+  statusBox.textContent = message;
+}
 
 function validLink(link) {
   return /^https:\/\/www\.icloud\.com\/shortcuts\/[a-f0-9]{32}\/?$/i.test(link);
 }
 
-function loadShortcuts() {
-  try {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    const data = saved ? JSON.parse(saved) : [];
+function validItem(item) {
+  return (
+    item &&
+    typeof item.name === "string" &&
+    item.name.trim().length > 0 &&
+    typeof item.link === "string" &&
+    validLink(item.link)
+  );
+}
 
-    myShortcuts = Array.isArray(data) ? data : [];
-  } catch (error) {
-    myShortcuts = [];
-    showStatus("⚠️ تعذر قراءة الاختصارات المحفوظة");
+function renderShortcuts() {
+  list.replaceChildren();
+
+  if (shortcuts.length === 0) {
+    list.textContent = "لا توجد اختصارات حالياً";
+    return;
   }
 
-  renderShortcuts();
-}
+  shortcuts.forEach(function(item, index) {
 
-function saveShortcuts() {
-  try {
-    localStorage.setItem(
-      STORAGE_KEY,
-      JSON.stringify(myShortcuts)
-    );
+    const card = document.createElement("div");
+    card.className = "card";
 
-    return true;
-  } catch (error) {
-    showStatus("⚠️ تعذر الحفظ في المتصفح");
-    return false;
-  }
-}
+    const title = document.createElement("h2");
+    title.textContent =
+      (item.icon || "📱") + " " + item.name;
 
-function showStatus(message) {
-  document.getElementById("status").textContent = message;
-}
+    const link = document.createElement("a");
+    link.className = "btn";
+    link.href = item.link;
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+    link.textContent = "📲 إضافة الاختصار";
 
-function createCard(item, index, removable) {
-  const card = document.createElement("div");
-  card.className = "card";
-
-  const title = document.createElement("h2");
-  title.textContent = (item.icon || "📱") + " " + item.name;
-
-  const link = document.createElement("a");
-  link.className = "btn";
-  link.href = item.link;
-  link.target = "_blank";
-  link.rel = "noopener noreferrer";
-  link.textContent = "📲 إضافة الاختصار";
-
-  card.appendChild(title);
-  card.appendChild(link);
-
-  if (removable) {
     const del = document.createElement("button");
     del.className = "delete";
     del.textContent = "🗑️ حذف الاختصار";
@@ -278,28 +261,69 @@ function createCard(item, index, removable) {
       deleteShortcut(index);
     });
 
+    card.appendChild(title);
+    card.appendChild(link);
     card.appendChild(del);
-  }
 
-  return card;
+    list.appendChild(card);
+  });
 }
 
-function renderShortcuts() {
-  const list = document.getElementById("shortcutsList");
+async function loadShortcuts() {
+  list.textContent = "⏳ جارٍ تحميل الاختصارات...";
 
-  list.replaceChildren();
-
-  originalShortcuts.forEach(function(item) {
-    list.appendChild(
-      createCard(item, -1, false)
+  try {
+    const response = await fetch(
+      FILE_NAME + "?v=" + Date.now(),
+      { cache: "no-store" }
     );
+
+    if (!response.ok) {
+      throw new Error("تعذر الوصول إلى الملف");
+    }
+
+    const data = await response.json();
+
+    if (!Array.isArray(data)) {
+      throw new Error("صيغة الملف غير صحيحة");
+    }
+
+    if (!data.every(validItem)) {
+      throw new Error("بعض بيانات الاختصارات غير صحيحة");
+    }
+
+    shortcuts = data;
+    pendingShortcuts = null;
+    saveArea.hidden = true;
+
+    renderShortcuts();
+
+    showStatus("✅ تم تحميل الاختصارات من GitHub");
+
+  } catch (error) {
+    list.textContent =
+      "⚠️ تعذر تحميل الاختصارات. تأكد من وجود shortcuts.json بجانب shortcuts.html.";
+
+    showStatus("⚠️ " + error.message);
+  }
+}
+
+function prepareSave(newData) {
+  pendingShortcuts = newData;
+
+  jsonOutput.value =
+    JSON.stringify(newData, null, 2);
+
+  saveArea.hidden = false;
+
+  saveArea.scrollIntoView({
+    behavior: "smooth",
+    block: "start"
   });
 
-  myShortcuts.forEach(function(item, index) {
-    list.appendChild(
-      createCard(item, index, true)
-    );
-  });
+  showStatus(
+    "✅ تم تجهيز التعديل. بقي نسخه وحفظه في GitHub."
+  );
 }
 
 function addShortcut() {
@@ -321,40 +345,35 @@ function addShortcut() {
     return;
   }
 
-  const all = originalShortcuts.concat(myShortcuts);
+  const current = pendingShortcuts || shortcuts;
 
-  if (all.some(function(item) {
-    return item.link === link;
+  if (current.some(function(item) {
+    return item.link.toLowerCase() === link.toLowerCase();
   })) {
     showStatus("⚠️ هذا الاختصار موجود بالفعل");
     return;
   }
 
-  const updated = myShortcuts.concat({
+  const updated = current.concat({
     name: name,
     icon: "📱",
     link: link
   });
 
-  const previous = myShortcuts;
-
-  myShortcuts = updated;
-
-  if (!saveShortcuts()) {
-    myShortcuts = previous;
-    return;
-  }
-
-  renderShortcuts();
+  prepareSave(updated);
 
   document.getElementById("shortcutName").value = "";
   document.getElementById("shortcutLink").value = "";
-
-  showStatus("✅ تم حفظ الاختصار على هذا الجهاز");
 }
 
 function deleteShortcut(index) {
-  const item = myShortcuts[index];
+  const current = pendingShortcuts || shortcuts;
+
+  /*
+    الحذف يعتمد على العنصر الظاهر في
+    القائمة المحمّلة من GitHub.
+  */
+  const item = shortcuts[index];
 
   if (!item) return;
 
@@ -364,93 +383,47 @@ function deleteShortcut(index) {
 
   if (!confirmed) return;
 
-  const previous = myShortcuts;
-
-  myShortcuts = myShortcuts.filter(function(_, i) {
-    return i !== index;
+  const updated = current.filter(function(entry) {
+    return entry.link !== item.link;
   });
 
-  if (!saveShortcuts()) {
-    myShortcuts = previous;
+  prepareSave(updated);
+}
+
+async function copyData() {
+  if (!pendingShortcuts) {
+    showStatus("⚠️ لا يوجد تعديل جديد لنسخه");
     return;
   }
 
-  renderShortcuts();
-  showStatus("✅ تم حذف الاختصار");
-}
-
-async function exportShortcuts() {
-  const data = JSON.stringify(myShortcuts, null, 2);
+  const text = jsonOutput.value;
 
   try {
-    await navigator.clipboard.writeText(data);
-    showStatus("✅ تم نسخ الاختصارات");
+    await navigator.clipboard.writeText(text);
+
+    showStatus(
+      "✅ تم نسخ البيانات. افتح GitHub والصقها في shortcuts.json ثم اضغط Commit."
+    );
+
   } catch (error) {
-    const area = document.getElementById("importArea");
-    const field = document.getElementById("importText");
+    jsonOutput.focus();
+    jsonOutput.select();
 
-    area.hidden = false;
-    field.value = data;
-    field.focus();
-    field.select();
-
-    showStatus("📋 انسخ النص الظاهر واحتفظ به");
+    showStatus(
+      "📋 انسخ النص المحدد من المربع، ثم الصقه في GitHub."
+    );
   }
 }
 
-function showImport() {
-  const area = document.getElementById("importArea");
-  area.hidden = !area.hidden;
-}
-
-function importShortcuts() {
-  const text = document
-    .getElementById("importText")
-    .value.trim();
-
-  try {
-    const data = JSON.parse(text);
-
-    if (!Array.isArray(data)) {
-      throw new Error("Invalid data");
-    }
-
-    const valid = data.every(function(item) {
-      return (
-        item &&
-        typeof item.name === "string" &&
-        item.name.trim() &&
-        typeof item.link === "string" &&
-        validLink(item.link)
-      );
-    });
-
-    if (!valid) {
-      throw new Error("Invalid shortcuts");
-    }
-
-    const previous = myShortcuts;
-
-    myShortcuts = data.map(function(item) {
-      return {
-        name: item.name,
-        icon: item.icon || "📱",
-        link: item.link
-      };
-    });
-
-    if (!saveShortcuts()) {
-      myShortcuts = previous;
-      return;
-    }
-
-    renderShortcuts();
-    showStatus("✅ تمت استعادة الاختصارات");
-
-    document.getElementById("importArea").hidden = true;
-  } catch (error) {
-    showStatus("⚠️ بيانات النسخة الاحتياطية غير صحيحة");
+function reloadShortcuts() {
+  if (
+    pendingShortcuts &&
+    !confirm("عند التحديث ستُلغى التعديلات التي لم تحفظها في GitHub. هل تريد المتابعة؟")
+  ) {
+    return;
   }
+
+  loadShortcuts();
 }
 
 loadShortcuts();

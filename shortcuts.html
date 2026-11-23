@@ -426,6 +426,49 @@ for (let i = 1; i <= 100; i++) {
   </div>
 
 </footer>
+<div class="card">
+  <h2>➕ إضافة اختصار جديد</h2>
+  <input id="shortcutName" placeholder="اسم الاختصار">
+  <input id="shortcutLink" placeholder="رابط الاختصار">
+  <button onclick="addShortcut()">💾 حفظ الاختصار</button>
+  <div id="savedShortcuts"></div>
+</div>
 
+<script>
+function addShortcut() {
+  const name = document.getElementById("shortcutName").value.trim();
+  const link = document.getElementById("shortcutLink").value.trim();
+
+  if (!name || !link.startsWith("https://www.icloud.com/shortcuts/")) {
+    alert("أدخل اسم الاختصار ورابط iCloud الصحيح");
+    return;
+  }
+
+  const list = JSON.parse(localStorage.getItem("myShortcuts") || "[]");
+  list.push({name, link});
+  localStorage.setItem("myShortcuts", JSON.stringify(list));
+  showShortcuts();
+}
+
+function showShortcuts() {
+  const list = JSON.parse(localStorage.getItem("myShortcuts") || "[]");
+  const box = document.getElementById("savedShortcuts");
+  box.innerHTML = "";
+
+  list.forEach(item => {
+    const a = document.createElement("a");
+    a.href = item.link;
+    a.textContent = "📲 " + item.name;
+    a.className = "btn";
+    a.style.display = "block";
+    a.style.marginTop = "12px";
+    a.target = "_blank";
+    a.rel = "noopener noreferrer";
+    box.appendChild(a);
+  });
+}
+
+showShortcuts();
+</script>
 </body>
 </html>

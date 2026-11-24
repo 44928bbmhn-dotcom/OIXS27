@@ -3,75 +3,74 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>OIXS27 | بطاقات الشحن</title>
+<title>OIXS27 | بطاقات السعودية</title>
 
 <style>
-* {
-  box-sizing: border-box;
+*{box-sizing:border-box}
+
+body{
+background:#0b1626;
+color:white;
+font-family:Arial,sans-serif;
+margin:0;
+text-align:center;
 }
 
-body {
-  background: #0b1626;
-  color: white;
-  font-family: Arial, sans-serif;
-  margin: 0;
-  text-align: center;
+header{
+background:#15243b;
+padding:30px 15px;
+border-bottom:3px solid #ffd54f;
 }
 
-header {
-  background: #15243b;
-  padding: 30px 15px;
+h1{color:#ffd54f}
+
+.card{
+background:#15243b;
+margin:20px auto;
+padding:25px;
+border-radius:20px;
+width:90%;
+max-width:450px;
 }
 
-h1 {
-  color: #ffd54f;
+select,button,.back{
+width:100%;
+padding:15px;
+margin-top:12px;
+border:0;
+border-radius:12px;
+font-size:18px;
 }
 
-.card {
-  background: #15243b;
-  margin: 20px auto;
-  padding: 25px;
-  border-radius: 20px;
-  width: 90%;
-  max-width: 450px;
+select{
+background:#253750;
+color:white;
 }
 
-select, button, .back {
-  width: 100%;
-  padding: 15px;
-  margin-top: 12px;
-  border: none;
-  border-radius: 12px;
-  font-size: 18px;
+button{
+background:#246da8;
+color:white;
+cursor:pointer;
 }
 
-select {
-  background: #253750;
-  color: white;
+.icon{font-size:55px}
+
+.back{
+display:block;
+background:#455468;
+color:white;
+text-decoration:none;
 }
 
-button {
-  background: #246da8;
-  color: white;
-  cursor: pointer;
+.notice{
+color:#ffd54f;
+padding:15px;
 }
 
-.icon {
-  font-size: 55px;
+footer{
+padding:20px;
+color:#aaa;
 }
-
-.back {
-  display: block;
-  background: #455468;
-  color: white;
-  text-decoration: none;
-}
-
-.notice {
-  color: #ffd54f;
-  padding: 15px;
-}
-
 </style>
 </head>
 
@@ -80,6 +79,8 @@ button {
 <header>
 <h1>OIXS27</h1>
 <h2>💳 بطاقات الشحن الرقمية</h2>
+<h3>🇸🇦 المملكة العربية السعودية</h3>
+<p>الريال السعودي | SAR</p>
 </header>
 
 <p class="notice">
@@ -89,11 +90,14 @@ button {
 <div class="card">
 <div class="icon">🍎</div>
 <h2>Apple Gift Card</h2>
+<p>🇸🇦 الحساب السعودي</p>
 
 <select id="apple">
 <option value="50">50 ريال</option>
 <option value="100">100 ريال</option>
 <option value="200">200 ريال</option>
+<option value="250">250 ريال</option>
+<option value="500">500 ريال</option>
 </select>
 
 <button onclick="choose('Apple','apple')">
@@ -104,10 +108,15 @@ button {
 <div class="card">
 <div class="icon">▶️</div>
 <h2>Google Play</h2>
+<p>🇸🇦 الحساب السعودي</p>
 
 <select id="google">
+<option value="20">20 ريال</option>
 <option value="50">50 ريال</option>
 <option value="100">100 ريال</option>
+<option value="200">200 ريال</option>
+<option value="300">300 ريال</option>
+<option value="400">400 ريال</option>
 </select>
 
 <button onclick="choose('Google Play','google')">
@@ -116,7 +125,13 @@ button {
 </div>
 
 <div class="card">
-<p id="result">اختر بطاقة للتجربة</p>
+<h2>🛒 ملخص الاختيار</h2>
+
+<p id="result" aria-live="polite">
+اختر بطاقة للتجربة
+</p>
+
+<p>🇸🇦 السعودية</p>
 
 <a class="back" href="index.html">
 🏠 العودة للرئيسية
@@ -124,15 +139,15 @@ button {
 </div>
 
 <script>
-function choose(name,id) {
-  const price = document.getElementById(id).value;
-  document.getElementById('result').textContent =
-  'اختيار تجريبي: ' + name + ' - ' + price + ' ريال';
+function choose(name,id){
+const price=document.getElementById(id).value;
+document.getElementById('result').textContent=
+'اختيار تجريبي: '+name+' - '+price+' ريال سعودي';
 }
 </script>
 
 <footer>
-<p>OIXS27 © 2026</p>
+OIXS27 © 2026 🇸🇦
 </footer>
 
 </body>

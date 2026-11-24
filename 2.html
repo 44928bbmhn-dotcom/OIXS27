@@ -4,100 +4,335 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>خلفيات OIXS27</title>
+
 <style>
+* {
+  box-sizing: border-box;
+}
+
 body {
   background: #081426;
   color: white;
   font-family: Arial, sans-serif;
   text-align: center;
   margin: 0;
+}
+
+header {
+  background: #15243b;
+  padding: 35px 15px;
+}
+
+h1 {
+  color: #ffd54f;
+}
+
+main {
+  max-width: 650px;
+  margin: auto;
   padding: 20px;
 }
-h1 { color: #ffda55; }
+
 .card {
   background: #172844;
   padding: 20px;
-  margin: 20px 0;
+  margin-bottom: 20px;
   border-radius: 20px;
 }
-.wallpaper {
-  height: 230px;
-  border-radius: 16px;
-  margin-bottom: 15px;
-}
-.w1 { background: linear-gradient(135deg,#004e92,#000428); }
-.w2 { background: linear-gradient(135deg,#ff512f,#dd2476); }
-.w3 { background: linear-gradient(135deg,#11998e,#38ef7d); }
-.w4 { background: linear-gradient(135deg,#654ea3,#eaafc8); }
-button, a {
-  display: inline-block;
-  background: #ffda55;
-  color: #111;
-  padding: 14px 18px;
-  border: 0;
+
+input {
+  width: 100%;
+  padding: 16px;
+  margin: 10px 0;
+  background: #081426;
+  color: white;
+  border: 1px solid #455468;
   border-radius: 12px;
+  font-size: 16px;
+}
+
+button, .btn {
+  display: block;
+  width: 100%;
+  background: #ffd54f;
+  color: #081426;
+  padding: 16px;
+  border: none;
+  border-radius: 12px;
+  margin: 12px 0;
+  font-size: 17px;
   font-weight: bold;
   text-decoration: none;
-  margin: 5px;
+  cursor: pointer;
 }
-.back { background: #455468; color: white; }
-footer { margin-top: 35px; color: #aaa; }
+
+.blue {
+  background: #246da8;
+  color: white;
+}
+
+.red {
+  background: #b71c1c;
+  color: white;
+}
+
+.back {
+  background: #455468;
+  color: white;
+}
+
+img {
+  width: 100%;
+  border-radius: 16px;
+  margin: 15px 0;
+}
+
+#preview {
+  display: none;
+}
+
+#file {
+  display: none;
+}
+
+footer {
+  color: #ffd54f;
+  padding: 25px;
+}
 </style>
 </head>
+
 <body>
 
+<header>
 <h1>📱 خلفيات OIXS27</h1>
-<p>خلفيات مميزة لجوالك</p>
+<p>مكتبة خلفيات الجوال</p>
+</header>
+
+<main>
+
+<div class="card">
+
+<h2>➕ إضافة خلفية جديدة</h2>
+
+<input type="text" id="name"
+placeholder="اسم الخلفية">
+
+<input type="file" id="file"
+accept="image/*">
+
+<button class="blue"
+onclick="document.getElementById('file').click()">
+📸 اختيار صورة
+</button>
+
+<img id="preview" alt="معاينة الخلفية">
+
+<button onclick="saveImage()">
+💾 حفظ الخلفية
+</button>
+
+<p id="status" role="status"></p>
+
+</div>
+
+<h2>🖼️ الخلفيات المحفوظة</h2>
 
 <div id="gallery"></div>
 
-<a class="back" href="1.html">⬅️ العودة للرئيسية</a>
+<a class="btn back" href="folders.html">
+📁 الرجوع إلى المجلدات
+</a>
 
-<footer>OIXS27 © 2026</footer>
+</main>
+
+<footer>
+© 2026 OIXS27
+</footer>
 
 <script>
-const gallery = document.getElementById("gallery");
 
-for (let i = 1; i <= 4; i++) {
-  gallery.innerHTML += `
-    <div class="card">
-      <h2>خلفية رقم ${i}</h2>
-      <div class="wallpaper w${i}"></div>
-      <button onclick="downloadWallpaper(${i})">
-        📥 حفظ الخلفية
-      </button>
-    </div>
-  `;
+let selectedImage = "";
+let images = [];
+
+try {
+  images = JSON.parse(
+    localStorage.getItem("oixs27_wallpapers")
+    || "[]"
+  );
+} catch(e) {
+  images = [];
 }
 
-function downloadWallpaper(i) {
-  const colors = [
-    ["#004e92","#000428"],
-    ["#ff512f","#dd2476"],
-    ["#11998e","#38ef7d"],
-    ["#654ea3","#eaafc8"]
-  ];
+const file = document.getElementById("file");
+const preview = document.getElementById("preview");
+const status = document.getElementById("status");
 
-  const canvas = document.createElement("canvas");
-  canvas.width = 1170;
-  canvas.height = 2532;
+file.addEventListener("change", function() {
 
-  const ctx = canvas.getContext("2d");
-  const gradient = ctx.createLinearGradient(
-    0,0,1170,2532
+  if (!this.files[0]) return;
+
+  selectedImage = "";
+
+  const reader = new FileReader();
+
+  reader.onload = function(e) {
+
+    const image = new Image();
+
+    image.onload = function() {
+
+      const canvas = document.createElement("canvas");
+
+      const scale = Math.min(
+        1, 1600 / Math.max(image.width, image.height)
+      );
+
+      canvas.width = Math.round(image.width * scale);
+      canvas.height = Math.round(image.height * scale);
+
+      canvas.getContext("2d").drawImage(
+        image, 0, 0, canvas.width, canvas.height
+      );
+
+      selectedImage = canvas.toDataURL(
+        "image/jpeg", 0.85
+      );
+
+      preview.src = selectedImage;
+      preview.style.display = "block";
+      status.textContent = "تم اختيار الصورة ✅";
+
+    };
+
+    image.onerror = function() {
+      status.textContent = "تعذر فتح الصورة، اختر صورة أخرى";
+    };
+
+    image.src = e.target.result;
+
+  };
+
+  reader.readAsDataURL(this.files[0]);
+
+});
+
+function saveImage() {
+
+  const name = document.getElementById("name").value.trim();
+
+  if (!selectedImage) {
+    alert("اختر صورة أولاً");
+    return;
+  }
+
+  const updated = [{
+    name: name || "خلفية جديدة",
+    image: selectedImage
+  }, ...images];
+
+  try {
+
+    localStorage.setItem(
+      "oixs27_wallpapers",
+      JSON.stringify(updated)
+    );
+
+    images = updated;
+
+  } catch(e) {
+
+    alert("مساحة التخزين غير كافية");
+    return;
+
+  }
+
+  selectedImage = "";
+  preview.style.display = "none";
+  preview.removeAttribute("src");
+  document.getElementById("name").value = "";
+  file.value = "";
+
+  status.textContent = "تم حفظ الخلفية بنجاح ✅";
+
+  showImages();
+
+}
+
+function showImages() {
+
+  const gallery = document.getElementById("gallery");
+
+  gallery.replaceChildren();
+
+  if (images.length === 0) {
+
+    gallery.textContent = "لا توجد خلفيات محفوظة";
+    return;
+
+  }
+
+  images.forEach(function(item, index) {
+
+    const card = document.createElement("div");
+    card.className = "card";
+
+    const title = document.createElement("h2");
+    title.textContent = item.name;
+
+    const img = document.createElement("img");
+    img.src = item.image;
+    img.alt = item.name;
+
+    const download = document.createElement("a");
+    download.className = "btn";
+    download.href = item.image;
+    download.download = item.name + ".jpg";
+    download.textContent = "📥 تنزيل الخلفية";
+
+    const remove = document.createElement("button");
+    remove.className = "red";
+    remove.textContent = "🗑️ حذف الخلفية";
+
+    remove.onclick = function() {
+      deleteImage(index);
+    };
+
+    card.append(title, img, download, remove);
+    gallery.appendChild(card);
+
+  });
+
+}
+
+function deleteImage(index) {
+
+  if (!confirm("هل تريد حذف الخلفية؟")) return;
+
+  const updated = images.filter(
+    (_, i) => i !== index
   );
 
-  gradient.addColorStop(0,colors[i-1][0]);
-  gradient.addColorStop(1,colors[i-1][1]);
+  try {
 
-  ctx.fillStyle = gradient;
-  ctx.fillRect(0,0,1170,2532);
+    localStorage.setItem(
+      "oixs27_wallpapers",
+      JSON.stringify(updated)
+    );
 
-  const link = document.createElement("a");
-  link.download = "OIXS27-wallpaper-" + i + ".png";
-  link.href = canvas.toDataURL("image/png");
-  link.click();
+    images = updated;
+    showImages();
+
+  } catch(e) {
+
+    alert("تعذر حفظ التعديل");
+
+  }
+
 }
+
+showImages();
+
 </script>
 
 </body>

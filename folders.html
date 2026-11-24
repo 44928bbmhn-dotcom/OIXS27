@@ -3,9 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>OIXS27</title>
+<title>OIXS27 | المجلدات</title>
 
 <style>
+* {
+  box-sizing: border-box;
+}
+
 body {
   background: #0b1626;
   color: white;
@@ -25,6 +29,8 @@ h1 {
 }
 
 .container {
+  max-width: 650px;
+  margin: auto;
   padding: 20px;
 }
 
@@ -52,6 +58,7 @@ summary::-webkit-details-marker {
 .folder {
   width: 42px;
   height: 42px;
+  flex-shrink: 0;
   fill: none;
   stroke: #2196ff;
   stroke-width: 2;
@@ -68,10 +75,35 @@ summary::-webkit-details-marker {
 
 .content {
   background: #0b1626;
-  padding: 18px;
+  padding: 15px;
   margin-top: 20px;
+  border-radius: 12px;
+}
+
+.content a {
+  display: block;
+  background: #246da8;
+  color: white;
+  padding: 15px;
+  margin: 10px 0;
   border-radius: 10px;
-  line-height: 2;
+  text-align: center;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.ladies a {
+  background: #c2185b;
+}
+
+.back {
+  display: block;
+  background: #455468;
+  color: white;
+  padding: 18px;
+  border-radius: 12px;
+  text-align: center;
+  text-decoration: none;
 }
 
 footer {
@@ -84,7 +116,8 @@ footer {
 
 <body>
 
-<svg style="display:none">
+<svg width="0" height="0"
+style="position:absolute">
 <symbol id="folder" viewBox="0 0 24 24">
 <path d="M3 5h6l3 3h9v12H3z"/>
 <path d="M3 11h18"/>
@@ -100,82 +133,144 @@ footer {
 
 <details>
 <summary>
-<svg class="folder"><use href="#folder"/></svg>
+<svg class="folder">
+<use href="#folder"/>
+</svg>
 مكتبة الاختصارات
 </summary>
+
 <div class="content">
-اختصارات iPhone
+<a href="library.html">
+فتح مكتبة الاختصارات ←
+</a>
 </div>
 </details>
 
 <details>
 <summary>
-<svg class="folder"><use href="#folder"/></svg>
+<svg class="folder">
+<use href="#folder"/>
+</svg>
 خلفيات الجوال
 </summary>
+
 <div class="content">
-خلفيات الجوال المميزة
+<a href="2.html">
+عرض الخلفيات ←
+</a>
 </div>
 </details>
 
 <details>
 <summary>
-<svg class="folder"><use href="#folder"/></svg>
+<svg class="folder">
+<use href="#folder"/>
+</svg>
 الخدمات الحكومية
 </summary>
+
 <div class="content">
-أبشر<br>
-توكلنا<br>
-نفاذ<br>
-سكني
+<a href="https://www.absher.sa">أبشر</a>
+<a href="https://www.iam.gov.sa">نفاذ</a>
+<a href="https://www.hrsd.gov.sa">وزارة الموارد البشرية</a>
+<a href="https://www.ca.gov.sa">حساب المواطن</a>
+<a href="https://sakani.sa">سكني</a>
+<a href="https://www.ejar.sa">إيجار</a>
+<a href="https://splonline.com.sa">البريد السعودي</a>
+<a href="https://www.gosi.gov.sa">التأمينات الاجتماعية</a>
 </div>
 </details>
 
 <details>
 <summary>
-<svg class="folder"><use href="#folder"/></svg>
+<svg class="folder">
+<use href="#folder"/>
+</svg>
 خدمات Apple
 </summary>
+
 <div class="content">
-حساب Apple<br>
-iCloud<br>
+<a href="https://account.apple.com">
+حساب Apple
+</a>
+<a href="https://www.icloud.com">
+iCloud
+</a>
+<a href="https://support.apple.com/ar-sa">
 دعم Apple
+</a>
+<a href="https://www.apple.com/sa-ar/">
+موقع Apple
+</a>
 </div>
 </details>
 
 <details>
 <summary>
-<svg class="folder"><use href="#folder"/></svg>
+<svg class="folder">
+<use href="#folder"/>
+</svg>
 البنوك
 </summary>
+
 <div class="content">
-تطبيقات وخدمات البنوك
+<a href="https://www.alahli.com">
+البنك الأهلي السعودي
+</a>
+<a href="https://www.alrajhibank.com.sa">
+مصرف الراجحي
+</a>
+<a href="https://www.bankaljazira.com">
+بنك الجزيرة
+</a>
+<a href="https://www.alinma.com">
+مصرف الإنماء
+</a>
+<a href="https://www.stcbank.com.sa">
+STC Bank
+</a>
+<a href="https://www.sama.gov.sa">
+البنك المركزي السعودي
+</a>
 </div>
 </details>
 
 <details>
 <summary class="pink">
-<svg class="folder"><use href="#folder"/></svg>
+<svg class="folder">
+<use href="#folder"/>
+</svg>
 قسم السيدات
 </summary>
-<div class="content">
-<a href="4.html" style="color:#ff80ab;">
+
+<div class="content ladies">
+<a href="4.html">
 🌸 فتح عالم السيدات ←
 </a>
-
-  
 </div>
 </details>
 
 <details>
 <summary>
-<svg class="folder"><use href="#folder"/></svg>
+<svg class="folder">
+<use href="#folder"/>
+</svg>
 المفضلة
 </summary>
+
 <div class="content">
-الاختصارات المفضلة
+<a href="library.html">
+مكتبة الاختصارات
+</a>
+<a href="https://www.icloud.com">
+iCloud
+</a>
 </div>
 </details>
+
+<a class="back" href="1.html">
+الرجوع إلى الرئيسية ↩
+</a>
 
 </div>
 

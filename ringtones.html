@@ -6,39 +6,52 @@
 <title>نغمات iPhone | OIXS27</title>
 
 <style>
-body {
-  background: #0c1927;
-  color: white;
-  font-family: Arial, sans-serif;
-  margin: 0;
-  padding: 20px;
-  text-align: center;
+body{
+background:#0c1927;
+color:white;
+font-family:Arial,sans-serif;
+margin:0;
+padding:20px;
+text-align:center;
 }
 
-h1 {
-  color: #ffd54a;
-  padding: 25px;
+h1{
+color:#ffd54a;
+padding:20px;
 }
 
-.card {
-  background: #142538;
-  border-radius: 20px;
-  padding: 25px;
-  margin: 15px 0;
+.card{
+background:#142538;
+border-radius:20px;
+padding:25px;
+margin:15px 0;
 }
 
-h2 {
-  color: #2997ff;
+h2{
+color:#2997ff;
 }
 
-.back {
-  display: block;
-  background: #455468;
-  color: white;
-  padding: 18px;
-  border-radius: 15px;
-  text-decoration: none;
-  margin-top: 25px;
+button,.back{
+display:block;
+width:100%;
+box-sizing:border-box;
+border:0;
+border-radius:15px;
+padding:16px;
+margin-top:12px;
+background:#246da8;
+color:white;
+font-size:18px;
+text-decoration:none;
+cursor:pointer;
+}
+
+.stop{
+background:#a83232;
+}
+
+.back{
+background:#455468;
 }
 </style>
 </head>
@@ -49,28 +62,88 @@ h2 {
 <p>مكتبة النغمات | OIXS27</p>
 
 <div class="card">
-<h2>📱 نغمات الاتصال</h2>
-<p>قريباً</p>
+<h2>📱 نغمة الاتصال</h2>
+<button onclick="play(0)">▶️ تشغيل</button>
+<button class="stop" onclick="stop()">⏹ إيقاف</button>
 </div>
 
 <div class="card">
-<h2>💬 نغمات الرسائل</h2>
-<p>قريباً</p>
+<h2>💬 نغمة الرسائل</h2>
+<button onclick="play(1)">▶️ تشغيل</button>
+<button class="stop" onclick="stop()">⏹ إيقاف</button>
 </div>
 
 <div class="card">
-<h2>🔔 نغمات التنبيهات</h2>
-<p>قريباً</p>
+<h2>🔔 نغمة التنبيهات</h2>
+<button onclick="play(2)">▶️ تشغيل</button>
+<button class="stop" onclick="stop()">⏹ إيقاف</button>
 </div>
 
 <div class="card">
-<h2>🎶 نغمات هادئة</h2>
-<p>قريباً</p>
+<h2>🎶 نغمة هادئة</h2>
+<button onclick="play(3)">▶️ تشغيل</button>
+<button class="stop" onclick="stop()">⏹ إيقاف</button>
 </div>
 
 <a class="back" href="index.html">
-الرجوع للرئيسية
+🏠 الرجوع للرئيسية
 </a>
+
+<script>
+let ctx;
+let active=[];
+
+function stop(){
+active.forEach(o=>{
+try{o.stop();}catch(e){}
+});
+active=[];
+}
+
+async function play(type){
+stop();
+
+if(!ctx){
+ctx=new (window.AudioContext ||
+window.webkitAudioContext)();
+}
+
+await ctx.resume();
+
+const melodies=[
+[523,659,784,659,523,659,784],
+[784,1047],
+[440,880,440],
+[392,440,523,659,523,440,392]
+];
+
+const notes=melodies[type];
+const duration=type===3?0.55:0.28;
+const start=ctx.currentTime+0.05;
+
+notes.forEach((freq,i)=>{
+const osc=ctx.createOscillator();
+const gain=ctx.createGain();
+const t=start+i*duration;
+
+osc.type="sine";
+osc.frequency.value=freq;
+
+gain.gain.setValueAtTime(0,t);
+gain.gain.linearRampToValueAtTime(0.15,t+0.03);
+gain.gain.exponentialRampToValueAtTime(
+0.001,t+duration-0.02
+);
+
+osc.connect(gain);
+gain.connect(ctx.destination);
+
+osc.start(t);
+osc.stop(t+duration);
+active.push(osc);
+});
+}
+</script>
 
 </body>
 </html>

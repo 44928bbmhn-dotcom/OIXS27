@@ -144,6 +144,74 @@ active.push(osc);
 });
 }
 </script>
+<script>
+function downloadTone(type){
+const melodies=[
+[523,659,784,659,523,659,784],
+[784,1047],
+[440,880,440],
+[392,440,523,659,523,440,392]
+];
 
+const rate=44100;
+const duration=type===3?0.55:0.28;
+const notes=melodies[type];
+const count=Math.round(rate*duration);
+const total=count*notes.length;
+
+const buffer=new ArrayBuffer(44+total*2);
+const view=new DataView(buffer);
+
+function text(offset,str){
+for(let i=0;i<str.length;i++){
+view.setUint8(offset+i,str.charCodeAt(i));
+}
+}
+
+text(0,"RIFF");
+view.setUint32(4,36+total*2,true);
+text(8,"WAVE");
+text(12,"fmt ");
+view.setUint32(16,16,true);
+view.setUint16(20,1,true);
+view.setUint16(22,1,true);
+view.setUint32(24,rate,true);
+view.setUint32(28,rate*2,true);
+view.setUint16(32,2,true);
+view.setUint16(34,16,true);
+text(36,"data");
+view.setUint32(40,total*2,true);
+
+for(let i=0;i<total;i++){
+const note=Math.floor(i/count);
+const t=(i%count)/rate;
+const envelope=Math.min(1,t/0.03,
+(duration-t)/0.05);
+const sample=Math.sin(
+2*Math.PI*notes[note]*t
+)*Math.max(0,envelope)*0.15;
+
+view.setInt16(44+i*2,sample*32767,true);
+}
+
+const blob=new Blob([buffer],{type:"audio/wav"});
+const url=URL.createObjectURL(blob);
+const a=document.createElement("a");
+a.href=url;
+a.download="OIXS27-tone-"+(type+1)+".wav";
+document.body.appendChild(a);
+a.click();
+a.remove();
+setTimeout(()=>URL.revokeObjectURL(url),60000);
+}
+
+document.querySelectorAll(".card").forEach((card,i)=>{
+const btn=document.createElement("button");
+btn.textContent="⬇️ تحميل النغمة";
+btn.style.background="#198754";
+btn.onclick=()=>downloadTone(i);
+card.appendChild(btn);
+});
+</script>
 </body>
 </html>

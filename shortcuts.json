@@ -43,5 +43,10 @@
     "name": "STC",
     "icon": "📞",
     "link": "https://mystc.stc.com.sa/login"
+  },
+  {
+    "name": "‏الدعم WhatsApp",
+    "icon": "📱",
+    "link": "https://faq.whatsapp.com/"
   }
 ]

@@ -33,10 +33,10 @@
     "name": "جهة اتصال استرداد Apple",
     "icon": "📱",
     "link": "https://www.icloud.com/shortcuts/873e78832cbd449fa43ea2c3e500a66c"
-  } ,
-{
-  "name": "حفظ الملف 3",
-  "icon": "📁",
-  "link": "https://www.icloud.com/shortcuts/f0485427a6734f839049fc622dcac449"
-}
+  },
+  {
+    "name": "حفظ الملف 3",
+    "icon": "📁",
+    "link": "https://www.icloud.com/shortcuts/f0485427a6734f839049fc622dcac449"
+  }
 ]

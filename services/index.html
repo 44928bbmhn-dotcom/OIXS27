@@ -1,1 +1,110 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OIXS27 | الخدمات الجديدة</title>
+<style>
+*{box-sizing:border-box}
+body{
+margin:0;
+background:#081426;
+color:white;
+font-family:Arial,sans-serif;
+text-align:center;
+}
+header{
+background:#142540;
+padding:35px 15px;
+border-bottom:3px solid #ffd54f;
+}
+h1{color:#ffd54f}
+main{
+max-width:650px;
+margin:auto;
+padding:20px;
+}
+.card{
+background:#17263e;
+padding:25px;
+margin-bottom:18px;
+border-radius:18px;
+}
+a{
+display:block;
+background:#246da8;
+color:white;
+padding:16px;
+border-radius:12px;
+text-decoration:none;
+margin-top:15px;
+}
+.back{background:#455468}
+footer{padding:25px}
+</style>
+</head>
+<body>
 
+<header>
+<h1>🌟 OIXS27</h1>
+<p>🆕 الخدمات الجديدة</p>
+</header>
+
+<main>
+
+<div class="card">
+<h2>🌐 Speedtest</h2>
+<p>قياس سرعة الإنترنت</p>
+<a href="https://www.speedtest.net/ar">
+قياس سرعة الإنترنت
+</a>
+</div>
+
+<div id="services">جاري تحميل الاختصارات...</div>
+
+<a class="back" href="../index.html">
+↩️ العودة للرئيسية
+</a>
+
+</main>
+
+<footer>OIXS27 © 2026</footer>
+
+<script>
+const box=document.getElementById("services");
+
+fetch("../shortcuts.json",{cache:"no-store"})
+.then(r=>{
+if(!r.ok) throw new Error();
+return r.json();
+})
+.then(data=>{
+box.textContent="";
+data.forEach(item=>{
+const card=document.createElement("div");
+card.className="card";
+
+const title=document.createElement("h2");
+title.textContent=item.icon+" "+item.name;
+card.appendChild(title);
+
+try{
+const url=new URL(item.link);
+if(url.protocol==="https:"){
+const a=document.createElement("a");
+a.href=url.href;
+a.textContent="فتح الاختصار";
+card.appendChild(a);
+}
+}catch(e){}
+
+box.appendChild(card);
+});
+})
+.catch(()=>{
+box.textContent="تعذر تحميل الاختصارات";
+});
+</script>
+
+</body>
+</html>

@@ -1,1 +1,132 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OIXS27 | إدارة الخدمات</title>
 
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;
+ background:#081426;
+ color:white;
+ font-family:Arial,sans-serif;
+ text-align:center;
+}
+header{
+ background:#142540;
+ padding:25px;
+ border-bottom:3px solid #ffd54f;
+}
+h1{color:#ffd54f}
+main{
+ max-width:650px;
+ margin:auto;
+ padding:20px;
+}
+.card{
+ background:#172844;
+ padding:22px;
+ border-radius:18px;
+}
+input,textarea{
+ width:100%;
+ padding:15px;
+ margin:10px 0;
+ background:#081426;
+ color:white;
+ border:1px solid #455468;
+ border-radius:12px;
+ font-size:16px;
+}
+button,a{
+ display:block;
+ width:100%;
+ padding:17px;
+ margin-top:15px;
+ background:#246da8;
+ color:white;
+ border:0;
+ border-radius:12px;
+ font-size:18px;
+ text-decoration:none;
+}
+.back{background:#455468}
+footer{padding:25px;color:#aaa}
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>🔐 OIXS27</h1>
+<p>لوحة إدارة الخدمات</p>
+</header>
+
+<main>
+<div class="card">
+
+<h2>➕ إضافة خدمة جديدة</h2>
+
+<form id="serviceForm">
+
+<input id="name" placeholder="اسم الخدمة" required>
+
+<textarea id="desc" placeholder="وصف الخدمة" required></textarea>
+
+<input id="link" type="url" placeholder="رابط الخدمة" required>
+
+<input id="photo" type="url" placeholder="رابط الصورة">
+
+<button type="submit">💾 حفظ مسودة الخدمة</button>
+
+</form>
+
+<p id="status"></p>
+
+<a href="https://github.com/">
+🔐 النشر عبر GitHub
+</a>
+
+</div>
+
+<a class="back" href="services.html">
+↩ العودة للخدمات
+</a>
+
+</main>
+
+<footer>OIXS27 © 2026</footer>
+
+<script>
+const form = document.getElementById("serviceForm");
+const fields = ["name","desc","link","photo"];
+const status = document.getElementById("status");
+
+try{
+ const draft = JSON.parse(
+ localStorage.getItem("serviceDraft") || "{}"
+ );
+ fields.forEach(key=>{
+ document.getElementById(key).value = draft[key] || "";
+ });
+}catch(e){}
+
+form.addEventListener("submit",function(e){
+ e.preventDefault();
+ const draft = {};
+ fields.forEach(key=>{
+ draft[key] = document.getElementById(key).value;
+ });
+ try{
+ localStorage.setItem("serviceDraft",JSON.stringify(draft));
+ status.textContent = "✅ تم حفظ المسودة على هذا المتصفح";
+ }catch(e){
+ status.textContent = "تعذر حفظ المسودة";
+ }
+});
+</script>
+
+</body>
+</html>

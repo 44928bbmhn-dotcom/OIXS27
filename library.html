@@ -315,7 +315,7 @@ link:"https://www.icloud.com/shortcuts/873e78832cbd449fa43ea2c3e500a66c"
 ];
 
 function valid(link){
-return /^https:\/\/www\.icloud\.com\/shortcuts\/[a-f0-9]{32}\/?$/i.test(link);
+return /^https:\/\/[^\s]+$/i.test(link);
 }
 
 function save(){

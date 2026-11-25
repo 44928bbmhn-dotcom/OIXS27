@@ -4,49 +4,80 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>OIXS27 | الرئيسية</title>
+
 <style>
-*{box-sizing:border-box}
+*{
+ box-sizing:border-box;
+}
+
 body{
  margin:0;
-background:#2b1b12;
+ background:#2b1b12;
  color:white;
  font-family:Arial,sans-serif;
  text-align:center;
 }
+
 header{
-background:#4e342e;
- padding:30px 15px;
+ background:#4e342e;
+ padding:35px 15px;
  border-bottom:3px solid #ffd54f;
 }
-h1{color:#ffd54f}
+
+h1{
+ color:#ffd54f;
+ font-size:38px;
+ margin:15px 0;
+}
+
 main{
  max-width:650px;
  margin:auto;
  padding:20px;
 }
+
 .card{
-background:#5d4037;
+ background:#5d4037;
  padding:22px;
  margin:20px 0;
- border-radius:18px;
+ border-radius:20px;
+ border:1px solid #795548;
 }
+
+.card h2{
+ color:#ffffff;
+ font-size:24px;
+}
+
+.card p{
+ color:#efebe9;
+ line-height:1.8;
+}
+
 a{
  display:block;
-background:#8b5e34;
+ background:#8b5e34;
  color:white;
  padding:17px;
  margin-top:15px;
  border-radius:12px;
  text-decoration:none;
  font-size:18px;
+ border:1px solid #b08968;
 }
-a:active{background:#455468}
+
+a:active{
+ background:#3e2723;
+}
+
 footer{
  padding:25px;
- color:#aaa;
+ color:#d7ccc8;
+ border-top:1px solid #795548;
 }
 </style>
 </head>
+
 <body>
 
 <header>
@@ -65,45 +96,32 @@ footer{
 <div class="card">
 <h2>🎨 الخلفيات</h2>
 <p>خلفيات مميزة لجهازك</p>
-<a href="2.html">عرض الخلفيات</a>
-</div>
-<div class="card">
-<h2>🎵 نغمات iPhone</h2>
-<p>نغمات مميزة لجهازك</p>
-<a href="ringtones.html">عرض النغمات</a>
-</div>
-<div class="card">
-<h2>📲 التطبيقات</h2>
-<p>تطبيقات وأدوات مفيدة</p>
-<a href="3.html">عرض التطبيقات</a>
+<a href="#wallpapers" onclick="alert('سيتم إضافة رابط الخلفيات');return false;">عرض الخلفيات</a>
 </div>
 
 <div class="card">
-<h2>💳 طرق الدفع</h2>
-<button type="button"
-style="background:#000;color:white;
-padding:18px;width:100%;
-border:1px solid #555;
-border-radius:12px;font-size:22px;"
-onclick="alert('نسخة تجريبية - لا يوجد دفع حقيقي')">
-Apple Pay
-</button>
-<p>🇸🇦 الريال السعودي | SAR</p>
-<p>🔒 الدفع غير متاح حالياً</p>
+<h2>🎵 نغمات iPhone</h2>
+<p>مجموعة من النغمات</p>
+<a href="ringtones.html">عرض النغمات</a>
 </div>
+
 <div class="card">
-<h2>💳 بطاقات الشحن الرقمية</h2>
-<p>بطاقات Apple وGoogle Play</p>
-<a href="cards.html">عرض البطاقات التجريبية</a>
+<h2>📁 المجلدات</h2>
+<p>مجلدات وأدوات متنوعة</p>
+<a href="folders.html">فتح المجلدات</a>
 </div>
+
 <div class="card">
-<h2>🆕 جديد الخدمات</h2>
-<p>أحدث التطبيقات والاختصارات والخدمات</p>
-<a href="services.html">عرض الخدمات الجديدة</a>
+<h2>💳 البطاقات</h2>
+<p>مكتبة البطاقات</p>
+<a href="cards.html">عرض البطاقات</a>
 </div>
+
 </main>
+
 <footer>
-OIXS27 © 2026
+<p>جميع الحقوق محفوظة © 2026</p>
+<p>OIXS27 🤎</p>
 </footer>
 
 </body>

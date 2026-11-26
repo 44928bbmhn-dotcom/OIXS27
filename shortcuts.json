@@ -48,5 +48,10 @@
     "name": "‏الدعم WhatsApp",
     "icon": "📱",
     "link": "https://faq.whatsapp.com/"
+  },
+  {
+    "name": "‏إنشاء حساب Apple",
+    "icon": "🍎",
+    "link": "https://www.icloud.com/shortcuts/1b1188717a2f4bdaad26705e29063d7e"
   }
 ]

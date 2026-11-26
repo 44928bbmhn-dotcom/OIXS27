@@ -1,0 +1,21 @@
+backend:
+  name: github
+  repo: 44928bbmhn-dotcom/OIXS27
+  branch: main
+
+media_folder: "images"
+public_folder: "images"
+
+collections:
+  - name: "services"
+    label: "الخدمات"
+    folder: "services"
+    create: true
+    extension: "json"
+    format: "json"
+    slug: "{{slug}}"
+    fields:
+      - {label: "اسم الخدمة", name: "title", widget: "string"}
+      - {label: "وصف الخدمة", name: "description", widget: "text"}
+      - {label: "رابط الخدمة", name: "link", widget: "string"}
+      - {label: "الصورة", name: "image", widget: "image", required: false}

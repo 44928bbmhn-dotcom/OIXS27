@@ -119,7 +119,7 @@ border-top:1px solid #795548;
 <h2>🎧 المقطع الصوتي</h2>
 
 <input type="file" id="audioFile"
-accept="audio/*" hidden
+accept=".mp3,.m4a,.wav,.aac,audio/*" hidden
 onchange="if(this.files.length){document.getElementById('player').src=URL.createObjectURL(this.files[0]);}">
 
 <button onclick="document.getElementById('audioFile').click()"

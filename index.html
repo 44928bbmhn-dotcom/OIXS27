@@ -120,7 +120,7 @@ border-top:1px solid #795548;
 
 <input type="file" id="audioFile"
 accept=".mp3,.m4a,.wav,.aac,audio/*" hidden
-onchange="if(this.files.length){document.getElementById('player').src=URL.createObjectURL(this.files[0]);}">
+onchange="if(this.files.length){const p=document.getElementById('player');p.src=URL.createObjectURL(this.files[0]);p.load();}">
 
 <button onclick="document.getElementById('audioFile').click()"
 style="background:#8b6035;color:white;padding:18px;border:0;border-radius:14px;width:100%;font-size:18px;">

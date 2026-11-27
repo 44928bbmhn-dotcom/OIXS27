@@ -81,6 +81,13 @@
   ],
   "images": [],
   "wallpapers": [],
-  "services": [],
+  "services": [
+    {
+      "title": "موبايلي",
+      "description": "",
+      "link": "https://www.mobily.com.sa/web/ar/home/personal",
+      "image": ""
+    }
+  ],
   "audio": []
 }

@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OIXS27 V5</title>
+<style>
+:root{
+--bg:#082e20;
+--gold:#ffd700;
+}
+*{box-sizing:border-box}
+body{
+background:var(--bg);
+color:var(--gold);
+font-family:Arial,sans-serif;
+margin:0;
+padding:18px;
+text-align:center;
+}
+h1{font-size:36px}
+.card{
+background:#ffffff10;
+padding:18px;
+border-radius:20px;
+margin:15px 0;
+border:1px solid #ffffff20;
+}
+button,input,select,textarea{
+width:100%;
+padding:15px;
+margin:7px 0;
+border:0;
+border-radius:13px;
+font-size:17px;
+}
+input,select,textarea{
+background:#ffffff15;
+color:var(--gold);
+}
+option{
+background:#123b29;
+color:#ffd700;
+}
+button{
+background:#d4af37;
+color:#082e20;
+font-weight:bold;
+}
+.delete{
+background:#b32626;
+color:white;
+}
+.save{
+background:#187c40;
+color:white;
+}
+img{
+width:100%;
+max-width:350px;
+border-radius:15px;
+}
+audio{width:100%}
+a{
+display:block;
+color:var(--gold);
+padding:15px;
+}
+footer{padding:25px}
+</style>
+</head>
+<body>
+
+<h1 id="heading">OIXS27</h1>
+<h2>لوحة الإدارة V5</h2>
+
+<button onclick="toggleSettings()">
+⚙️ إعدادات الموقع
+</button>
+
+<div id="settings" class="card" hidden>
+
+<input id="siteName" placeholder="عنوان الموقع">
+
+<label>لون الخلفية</label>
+<input type="color" id="bg" value="#082e20">
+
+<label>لون الكتابة</label>
+<input type="color" id="gold" value="#ffd700">
+
+<button class="save" onclick="saveSettings()">
+💾 حفظ الإعدادات
+</button>
+
+</div>
+
+<div class="card">
+
+<h2>إدارة الخدمات</h2>
+
+<select id="category">
+<option>📱 التطبيقات</option>
+<option>⚡ الاختصارات</option>
+<option>🎧 المقاطع الصوتية</option>
+<option>🎵 نغمات iPhone</option>
+<option>🖼️ الصور</option>
+<option>🎨 الخلفيات</option>
+<option>🌐 المواقع</option>
+<option>🏛️ الخدمات الحكومية</option>
+<option>🛍️ المتاجر</option>
+<option>🧴 العطور والتجميل</option>
+<option>🛠️ الأدوات</option>
+</select>
+
+<input id="name" placeholder="اسم الخدمة">
+
+<textarea id="desc" placeholder="الوصف"></textarea>
+
+<input id="link" placeholder="رابط الخدمة">
+
+<input id="photo" placeholder="رابط الصورة">
+
+<label>📷 اختيار صورة من الآيفون</label>
+<input type="file" id="file" accept="image/*">
+
+<img id="preview" hidden>
+
+<button onclick="addItem()">
+➕ إضافة أو تحديث
+</button>
+
+<button class="save" onclick="saveData()">
+💾 حفظ البيانات
+</button>
+
+<p id="status"></p>
+
+</div>
+
+<h2>📂 الخدمات المضافة</h2>
+
+<div id="items"></div>
+
+<footer>OIXS27 © 2026</footer>
+
+<script>
+const $=id=>document.getElementById(id);
+
+let data=JSON.parse(
+localStorage.getItem("OIXS27_V5")||"[]"
+);
+
+let editing=-1;
+
+function toggleSettings(){
+$("settings").hidden=!$("settings").hidden;
+}
+
+function saveSettings(){
+let s={
+name:$("siteName").value||"OIXS27",
+bg:$("bg").value,
+gold:$("gold").value
+};
+localStorage.setItem(
+"OIXS27_SETTINGS",JSON.stringify(s)
+);
+applySettings(s);
+alert("تم حفظ الإعدادات");
+}
+
+function applySettings(s){
+$("heading").textContent=s.name;
+document.title=s.name;
+$("siteName").value=s.name;
+$("bg").value=s.bg;
+$("gold").value=s.gold;
+document.documentElement.style.setProperty("--bg",s.bg);
+document.documentElement.style.setProperty("--gold",s.gold);
+}
+
+let settings=localStorage.getItem("OIXS27_SETTINGS");
+if(settings)applySettings(JSON.parse(settings));
+
+$("file").onchange=function(){
+let f=this.files[0];
+if(!f)return;
+let r=new FileReader();
+r.onload=function(){
+$("photo").value=r.result;
+$("preview").src=r.result;
+$("preview").hidden=false;
+};
+r.readAsDataURL(f);
+};
+
+function addItem(){
+if(!$("name").value.trim()){
+alert("اكتب اسم الخدمة");
+return;
+}
+
+let item={
+category:$("category").value,
+title:$("name").value,
+description:$("desc").value,
+link:$("link").value,
+image:$("photo").value
+};
+
+if(editing>=0){
+data[editing]=item;
+}else{
+data.push(item);
+}
+
+editing=-1;
+$("name").value="";
+$("desc").value="";
+$("link").value="";
+$("photo").value="";
+$("file").value="";
+$("preview").hidden=true;
+
+render();
+saveData();
+}
+
+function saveData(){
+try{
+localStorage.setItem(
+"OIXS27_V5",JSON.stringify(data)
+);
+$("status").textContent="✅ تم الحفظ على الجهاز";
+}catch(e){
+$("status").textContent="⚠️ مساحة الحفظ غير كافية";
+}
+}
+
+function editItem(i){
+let x=data[i];
+editing=i;
+$("category").value=x.category;
+$("name").value=x.title;
+$("desc").value=x.description;
+$("link").value=x.link;
+$("photo").value=x.image;
+$("preview").hidden=!x.image;
+if(x.image)$("preview").src=x.image;
+window.scrollTo(0,0);
+}
+
+function deleteItem(i){
+if(confirm("هل تريد حذف الخدمة؟")){
+data.splice(i,1);
+editing=-1;
+render();
+saveData();
+}
+}
+
+function safeURL(value,isImage=false){
+try{
+if(isImage && /^data:image\/(jpeg|png|webp|gif);base64,/i.test(value)){
+return value;
+}
+let u=new URL(value,location.href);
+if(["http:","https:"].includes(u.protocol)){
+return u.href;
+}
+}catch(e){}
+return "";
+}
+
+function render(){
+let box=$("items");
+box.replaceChildren();
+
+data.forEach((x,i)=>{
+let card=document.createElement("div");
+card.className="card";
+
+let cat=document.createElement("p");
+cat.textContent=x.category;
+card.append(cat);
+
+let title=document.createElement("h2");
+title.textContent=x.title;
+card.append(title);
+
+let image=safeURL(x.image,true);
+if(x.image && image){
+let img=document.createElement("img");
+img.src=image;
+card.append(img);
+}
+
+let desc=document.createElement("p");
+desc.textContent=x.description;
+card.append(desc);
+
+let link=safeURL(x.link);
+
+if(x.link && link){
+
+if(x.category.includes("الصوتية") ||
+x.category.includes("نغمات")){
+let audio=document.createElement("audio");
+audio.controls=true;
+audio.src=link;
+card.append(audio);
+}
+
+let a=document.createElement("a");
+a.href=link;
+a.target="_blank";
+a.rel="noopener noreferrer";
+a.textContent="🔗 فتح الخدمة";
+card.append(a);
+}
+
+let edit=document.createElement("button");
+edit.textContent="✏️ تعديل";
+edit.onclick=()=>editItem(i);
+card.append(edit);
+
+let del=document.createElement("button");
+del.className="delete";
+del.textContent="🗑️ حذف";
+del.onclick=()=>deleteItem(i);
+card.append(del);
+
+box.append(card);
+});
+}
+
+render();
+</script>
+</body>
+</html>

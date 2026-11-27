@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport"
+content="width=device-width,initial-scale=1">
+<title>CAS27</title>
+
+<style>
+*{box-sizing:border-box}
+
+body{
+margin:0;
+padding:15px;
+background:#082e20;
+color:#ffd700;
+font-family:Arial,sans-serif;
+}
+
+main{
+max-width:650px;
+margin:auto;
+}
+
+h1,h2,footer{
+text-align:center;
+}
+
+button,a.btn{
+display:block;
+width:100%;
+padding:17px;
+margin:10px 0;
+border:1px solid #526d49;
+border-radius:14px;
+background:#19583c;
+color:#ffd700;
+font-size:18px;
+text-align:center;
+text-decoration:none;
+cursor:pointer;
+}
+
+.settings{
+background:#997825;
+color:white;
+}
+
+.card{
+background:#123c30;
+border:1px solid #526d49;
+padding:18px;
+margin:15px 0;
+border-radius:18px;
+overflow-wrap:anywhere;
+}
+
+img,video{
+display:block;
+width:100%;
+max-height:500px;
+object-fit:contain;
+border-radius:12px;
+margin:12px 0;
+}
+
+audio{
+width:100%;
+margin:12px 0;
+}
+
+footer{
+padding:25px;
+}
+
+#status{
+text-align:center;
+}
+</style>
+</head>
+
+<body>
+<main>
+
+<h1>CAS27</h1>
+<h2>مكتبة الخدمات</h2>
+
+<button class="settings"
+onclick="admin()">
+⚙️ إدارة الموقع
+</button>
+
+<div id="menu">
+
+<button onclick="show('apps')">
+📱 التطبيقات
+</button>
+
+<button onclick="show('shortcuts')">
+⚡ الاختصارات
+</button>
+
+<button onclick="show('images')">
+🖼️ الصور
+</button>
+
+<button onclick="show('video')">
+🎬 مقاطع الفيديو
+</button>
+
+<button onclick="show('audio')">
+🎵 المقاطع الصوتية
+</button>
+
+<button onclick="show('wallpapers')">
+🎨 الخلفيات
+</button>
+
+<button onclick="show('services')">
+🏛️ الخدمات
+</button>
+
+</div>
+
+<div id="section" hidden>
+
+<h2 id="heading"></h2>
+
+<button onclick="admin()"
+id="addButton"></button>
+
+<div id="status"></div>
+<div id="list"></div>
+
+<button onclick="home()">
+↩️ العودة للرئيسية
+</button>
+
+</div>
+
+<footer>CAS27 © 2026</footer>
+
+</main>
+
+<script>
+
+const el = id =>
+document.getElementById(id);
+
+const names = {
+apps:"التطبيقات",
+shortcuts:"الاختصارات",
+images:"الصور",
+video:"مقاطع الفيديو",
+audio:"المقاطع الصوتية",
+wallpapers:"الخلفيات",
+services:"الخدمات"
+};
+
+const additions = {
+apps:"إضافة تطبيق",
+shortcuts:"إضافة اختصار",
+images:"إضافة صورة",
+video:"إضافة مقطع فيديو",
+audio:"إضافة مقطع صوتي",
+wallpapers:"إضافة خلفية",
+services:"إضافة خدمة"
+};
+
+let current = "";
+
+function admin(){
+location.href =
+"https://oixs27-admin-v5.44928bbmhn.workers.dev";
+}
+
+function safe(value){
+if(!value)return "";
+try{
+const u = new URL(value,location.href);
+return u.protocol === "https:" ? u.href : "";
+}catch{
+return "";
+}
+}
+
+function home(){
+current = "";
+el("section").hidden = true;
+el("menu").hidden = false;
+el("list").replaceChildren();
+}
+
+async function show(key){
+
+current = key;
+
+el("menu").hidden = true;
+el("section").hidden = false;
+
+el("heading").textContent = names[key];
+
+el("addButton").textContent =
+"➕ " + additions[key];
+
+el("list").replaceChildren();
+
+el("status").textContent =
+"جاري تحميل البيانات...";
+
+try{
+
+const response = await fetch(
+"content/shortcuts.json?t=" + Date.now(),
+{cache:"no-store"}
+);
+
+if(!response.ok)
+throw new Error("HTTP "+response.status);
+
+const data = await response.json();
+
+if(current !== key)return;
+
+let items = data[key] || [];
+
+if(key === "video" && !items.length){
+items = data.videos || [];
+}
+
+if(!Array.isArray(items))
+throw new Error("تنسيق البيانات غير صحيح");
+
+el("status").textContent = "";
+
+if(!items.length){
+el("status").textContent =
+"لا توجد إضافات حالياً";
+return;
+}
+
+items.forEach(item => {
+
+const card = document.createElement("div");
+card.className = "card";
+
+const title = document.createElement("h2");
+
+title.textContent =
+item.title || item.name || "";
+
+card.appendChild(title);
+
+const image = safe(item.image);
+const link = safe(item.link || item.url);
+
+if(image){
+
+const img = document.createElement("img");
+
+img.src = image;
+img.loading = "lazy";
+
+img.onerror = ()=>{
+const p = document.createElement("p");
+p.textContent = "الصورة غير متاحة حالياً";
+img.replaceWith(p);
+};
+
+card.appendChild(img);
+
+}
+
+const description =
+document.createElement("p");
+
+description.textContent =
+item.description || "";
+
+card.appendChild(description);
+
+if(key === "audio" && link){
+
+const audio = document.createElement("audio");
+
+audio.controls = true;
+audio.preload = "none";
+audio.src = link;
+
+card.appendChild(audio);
+
+}
+
+if(key === "video" && link){
+
+const video = document.createElement("video");
+
+video.controls = true;
+video.playsInline = true;
+video.preload = "none";
+video.src = link;
+
+card.appendChild(video);
+
+}
+
+if(link || image){
+
+const a = document.createElement("a");
+
+a.className = "btn";
+a.href = link || image;
+
+if(key === "images" || key === "wallpapers"){
+a.textContent = "📥 تحميل الصورة";
+a.download = "";
+}else{
+a.textContent = "🔗 فتح الخدمة أو الملف";
+}
+
+card.appendChild(a);
+
+}
+
+el("list").appendChild(card);
+
+});
+
+}catch(e){
+
+if(current === key){
+el("status").textContent =
+"تعذر تحميل البيانات: " + e.message;
+}
+
+}
+
+}
+
+</script>
+</body>
+</html>

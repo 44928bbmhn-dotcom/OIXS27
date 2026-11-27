@@ -3,107 +3,222 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>OIXS27 | الخدمات الجديدة</title>
+
+<title>OIXS27 | الاختصارات</title>
+
 <style>
-*{box-sizing:border-box}
+*{
+box-sizing:border-box;
+}
+
 body{
 margin:0;
-background:#081426;
+background:#101827;
 color:white;
 font-family:Arial,sans-serif;
 text-align:center;
 }
+
 header{
 background:#142540;
-padding:35px 15px;
-border-bottom:3px solid #ffd54f;
+padding:25px 15px;
 }
-h1{color:#ffd54f}
+
+h1{
+color:#ffd54f;
+margin:0;
+}
+
 main{
 max-width:650px;
 margin:auto;
-padding:20px;
+padding:15px;
 }
+
 .card{
-background:#17263e;
-padding:25px;
-margin-bottom:18px;
-border-radius:18px;
+background:#1c293b;
+border-radius:15px;
+padding:18px;
+margin:12px 0;
 }
-a{
+
+.card h2{
+font-size:20px;
+margin:10px 0;
+}
+
+.card p{
+color:#d1d5db;
+}
+
+.card img{
+width:80px;
+height:80px;
+object-fit:cover;
+border-radius:15px;
+}
+
+a,button{
 display:block;
+width:100%;
 background:#246da8;
 color:white;
-padding:16px;
-border-radius:12px;
 text-decoration:none;
-margin-top:15px;
+padding:14px;
+border:0;
+border-radius:12px;
+font-size:17px;
+margin-top:12px;
 }
-.back{background:#455468}
-footer{padding:25px}
+
+.back{
+background:#455468;
+}
+
+#status{
+padding:15px;
+color:#d1d5db;
+}
+
+footer{
+padding:20px;
+color:#9ca3af;
+}
 </style>
 </head>
+
 <body>
 
 <header>
-<h1>🌟 OIXS27</h1>
-<p>🆕 الخدمات الجديدة</p>
+<h1>OIXS27</h1>
+<p>📱 مكتبة الاختصارات</p>
 </header>
 
 <main>
 
-<div class="card">
-<h2>🌐 Speedtest</h2>
-<p>قياس سرعة الإنترنت</p>
-<a href="https://www.speedtest.net/ar">
-قياس سرعة الإنترنت
-</a>
-</div>
+<button onclick="loadData()">
+🔄 تحديث الاختصارات
+</button>
 
-<div id="services">جاري تحميل الاختصارات...</div>
+<p id="status">جاري تحميل الاختصارات...</p>
 
-<a class="back" href="../index.html">
-↩️ العودة للرئيسية
+<div id="list"></div>
+
+<a class="back" href="../1.html">
+⬅️ العودة للرئيسية
 </a>
 
 </main>
 
-<footer>OIXS27 © 2026</footer>
+<footer>
+OIXS27 © 2026
+</footer>
 
 <script>
-const box=document.getElementById("services");
 
-fetch("../shortcuts.json",{cache:"no-store"})
-.then(r=>{
-if(!r.ok) throw new Error();
-return r.json();
-})
-.then(data=>{
-box.textContent="";
-data.forEach(item=>{
+const box=document.getElementById("list");
+const status=document.getElementById("status");
+
+function safeURL(value){
+try{
+const url=new URL(value,location.href);
+return url.protocol==="https:"?url.href:null;
+}catch{
+return null;
+}
+}
+
+async function loadData(){
+
+status.textContent="جاري تحميل الاختصارات...";
+
+try{
+
+const response=await fetch(
+"../content/shortcuts.json?t="+Date.now(),
+{cache:"no-store"}
+);
+
+if(!response.ok){
+throw new Error("تعذر الاتصال بالملف");
+}
+
+const data=await response.json();
+
+if(!Array.isArray(data.shortcuts)){
+throw new Error("تنسيق البيانات غير صحيح");
+}
+
+box.replaceChildren();
+
+data.shortcuts.forEach(item=>{
+
 const card=document.createElement("div");
 card.className="card";
 
+if(item.image){
+
+const imageURL=safeURL(item.image);
+
+if(imageURL){
+
+const img=document.createElement("img");
+img.src=imageURL;
+img.alt=item.title||item.name||"";
+card.appendChild(img);
+
+}
+
+}
+
 const title=document.createElement("h2");
-title.textContent=item.icon+" "+item.name;
+
+title.textContent=
+(item.icon||"")+" "+
+(item.title||item.name||"بدون اسم");
+
 card.appendChild(title);
 
-try{
-const url=new URL(item.link);
-if(url.protocol==="https:"){
-const a=document.createElement("a");
-a.href=url.href;
-a.textContent="فتح الاختصار";
-card.appendChild(a);
+if(item.description){
+
+const description=document.createElement("p");
+
+description.textContent=item.description;
+
+card.appendChild(description);
+
 }
-}catch(e){}
+
+const link=safeURL(item.link);
+
+if(link){
+
+const button=document.createElement("a");
+
+button.href=link;
+button.textContent="📲 فتح الاختصار";
+
+card.appendChild(button);
+
+}
 
 box.appendChild(card);
+
 });
-})
-.catch(()=>{
-box.textContent="تعذر تحميل الاختصارات";
-});
+
+status.textContent=
+"عدد الاختصارات: "+data.shortcuts.length;
+
+}catch(error){
+
+status.textContent="❌ "+error.message;
+
+}
+
+}
+
+loadData();
+
 </script>
 
 </body>

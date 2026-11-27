@@ -71,12 +71,6 @@
       "description": "🏛️",
       "link": "https://www.cst.gov.sa/?utm_source=chatgpt.com",
       "image": ""
-    },
-    {
-      "title": "OIXS27-ADMIN - فتح موقع V3 الجديد",
-      "description": "🛠️",
-      "link": "https://apps.apple.com/app/id535886823?pt=9008&ct=iosChromeShare&mt=8",
-      "image": ""
     }
   ],
   "images": [],
@@ -98,6 +92,12 @@
       "title": "البورصة العقارية",
       "description": "🏛️",
       "link": "https://srem.moj.gov.sa/",
+      "image": ""
+    },
+    {
+      "title": "بنك الجزيرة",
+      "description": "🏛️",
+      "link": "https://www.aljazirabank.com.sa/ar-sa/",
       "image": ""
     }
   ],

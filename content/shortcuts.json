@@ -164,7 +164,15 @@
     }
   ],
   "audio": [],
-  "apps": [],
+  "apps": [
+    {
+      "title": "STC",
+      "name": "STC",
+      "description": "",
+      "link": "https://apps.apple.com/app/id6786701577",
+      "image": ""
+    }
+  ],
   "ringtones": [],
   "websites": [],
   "government": [],

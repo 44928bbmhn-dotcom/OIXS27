@@ -1,6 +1,78 @@
 {
   "shortcuts": [
     {
+      "title": "اشتراكات Apple",
+      "description": "🍎",
+      "link": "https://www.icloud.com/shortcuts/2b387c04359044f681f819615cfdd385",
+      "image": ""
+    },
+    {
+      "title": "إدارة أدوات",
+      "description": "🛠️",
+      "link": "https://www.icloud.com/shortcuts/071ebf1c50d943daac0832060de6f378",
+      "image": ""
+    },
+    {
+      "title": "إخراج الماء",
+      "description": "💧",
+      "link": "https://www.icloud.com/shortcuts/59b9fec8a53f4bf2bd09549bc0359881",
+      "image": ""
+    },
+    {
+      "title": "مساحة تخزين iPhone",
+      "description": "💾",
+      "link": "https://www.icloud.com/shortcuts/c99dbcbca3c74e38bcaaeaf27629380f",
+      "image": ""
+    },
+    {
+      "title": "إيقاف وتشغيل",
+      "description": "🔄",
+      "link": "https://www.icloud.com/shortcuts/6aea6f24281441dbbe95725a59c90e24",
+      "image": ""
+    },
+    {
+      "title": "التعبئة التلقائية وكلمات السر",
+      "description": "🔐",
+      "link": "https://www.icloud.com/shortcuts/8f7fa789752648a089cdc1fde4323880",
+      "image": ""
+    },
+    {
+      "title": "جهة اتصال استرداد Apple",
+      "description": "📱",
+      "link": "https://www.icloud.com/shortcuts/873e78832cbd449fa43ea2c3e500a66c",
+      "image": ""
+    },
+    {
+      "title": "حفظ الملف 3",
+      "description": "📁",
+      "link": "https://www.icloud.com/shortcuts/f0485427a6734f839049fc622dcac449",
+      "image": ""
+    },
+    {
+      "title": "STC",
+      "description": "📞",
+      "link": "https://mystc.stc.com.sa/login",
+      "image": ""
+    },
+    {
+      "title": "الدعم WhatsApp",
+      "description": "📱",
+      "link": "https://faq.whatsapp.com/",
+      "image": ""
+    },
+    {
+      "title": "إنشاء حساب Apple",
+      "description": "🍎",
+      "link": "https://www.icloud.com/shortcuts/1b1188717a2f4bdaad26705e29063d7e",
+      "image": ""
+    },
+    {
+      "title": "هيئة الاتصالات والفضاء والتقنية",
+      "description": "🏛️",
+      "link": "https://www.cst.gov.sa/?utm_source=chatgpt.com",
+      "image": ""
+    },
+    {
       "title": "OIXS27-ADMIN - فتح موقع V3 الجديد",
       "description": "🛠️",
       "link": "https://apps.apple.com/app/id535886823?pt=9008&ct=iosChromeShare&mt=8",

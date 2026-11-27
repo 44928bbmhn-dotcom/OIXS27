@@ -151,7 +151,7 @@ throw new Error("تنسيق البيانات غير صحيح");
 
 box.replaceChildren();
 
-data.shortcuts.forEach(item=>{
+[...data.shortcuts, ...(data.services || [])].forEach(item=>{
 
 const card=document.createElement("div");
 card.className="card";

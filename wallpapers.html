@@ -2,57 +2,60 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>OIXS27 | الخلفيات</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>خلفيات OIXS27</title>
 
 <style>
 *{
 box-sizing:border-box;
 }
+
 body{
 margin:0;
-background:#2b1b12;
-color:white;
+padding:15px;
+background:#082e20;
+color:#ffd700;
 font-family:Arial,sans-serif;
-text-align:center;
 }
-header{
-background:#4e342e;
-padding:25px;
-border-bottom:3px solid #ffd54f;
-}
-h1{
-color:#ffd54f;
-}
+
 main{
 max-width:650px;
 margin:auto;
-padding:15px;
 }
+
+h1,h2,p{
+text-align:center;
+}
+
 .card{
-background:#5d4037;
-padding:20px;
-margin-bottom:20px;
+background:#123e30;
+border:1px solid #526d49;
+padding:18px;
 border-radius:20px;
+margin:20px 0;
 }
+
 img{
+display:block;
 width:100%;
-max-width:280px;
-border-radius:18px;
+height:auto;
+border-radius:15px;
+margin:15px auto;
 }
+
 a{
 display:block;
-background:#8b6035;
-color:white;
-padding:16px;
-margin-top:15px;
+background:#185c39;
+color:#ffd700;
+text-align:center;
+padding:17px;
 border-radius:12px;
 text-decoration:none;
+margin:12px 0;
 }
-.back{
-background:#455468;
-}
+
 footer{
+text-align:center;
 padding:25px;
 }
 </style>
@@ -60,47 +63,135 @@ padding:25px;
 
 <body>
 
-<header>
-<h1>🎨 مكتبة الخلفيات</h1>
-<p>OIXS27</p>
-<p>خلفيات مميزة لأجهزة iPhone</p>
-</header>
-
 <main>
 
-<div class="card">
-<h2>🇸🇦 خلفية السعودية</h2>
-<img src="saudi.jpg" alt="خلفية السعودية">
-<a href="saudi.jpg" download>
-📥 تحميل الخلفية
-</a>
-</div>
+<h1 id="heading">OIXS27</h1>
+<h2>🎨 مكتبة الخلفيات</h2>
 
-<div class="card">
-<h2>🌙 خلفية داكنة</h2>
-<img src="dark.jpg" alt="خلفية داكنة">
-<a href="dark.jpg" download>
-📥 تحميل الخلفية
-</a>
-</div>
+<p id="status">جاري تحميل الخلفيات...</p>
 
-<div class="card">
-<h2>🌹 خلفية الورود</h2>
-<img src="images/05a22a1e-fe86-49a2-88ab-2e2688cd8402.jpg" alt="خلفية الورود">
-<a href="images/05a22a1e-fe86-49a2-88ab-2e2688cd8402.jpg" download>
-📥 تحميل الخلفية
-</a>
-</div>
+<div id="list"></div>
 
-<a class="back" href="index.html">
+<a href="index.html">
 ↩️ العودة للرئيسية
 </a>
 
 </main>
 
-<footer>
-OIXS27 © 2026
-</footer>
+<footer>OIXS27 © 2026</footer>
+
+<script>
+
+function safeURL(value){
+if(!value)return "";
+try{
+const u = new URL(value,location.href);
+return u.protocol === "https:" ? u.href : "";
+}catch{
+return "";
+}
+}
+
+async function loadWallpapers(){
+
+const status = document.getElementById("status");
+const list = document.getElementById("list");
+
+try{
+
+const response = await fetch(
+"content/shortcuts.json?v="+Date.now(),
+{cache:"no-store"}
+);
+
+if(!response.ok){
+throw new Error("تعذر تحميل البيانات");
+}
+
+const data = await response.json();
+
+const settings = data.settings || {};
+
+document.getElementById("heading").textContent =
+settings.title || "OIXS27";
+
+if(/^#[0-9a-f]{6}$/i.test(settings.background || "")){
+document.body.style.background = settings.background;
+}
+
+if(/^#[0-9a-f]{6}$/i.test(settings.color || "")){
+document.body.style.color = settings.color;
+}
+
+const items = data.wallpapers || [];
+
+list.replaceChildren();
+
+if(!items.length){
+status.textContent = "لا توجد خلفيات حالياً";
+return;
+}
+
+status.textContent = "";
+
+items.forEach(item=>{
+
+const card = document.createElement("div");
+card.className = "card";
+
+const title = document.createElement("h2");
+title.textContent = item.title || item.name || "خلفية";
+card.appendChild(title);
+
+const image = safeURL(item.image) || safeURL(item.link);
+
+if(image){
+
+const img = document.createElement("img");
+img.src = image;
+img.alt = title.textContent;
+
+img.onerror = ()=>{
+img.replaceWith(
+document.createTextNode("الصورة غير متاحة حالياً")
+);
+};
+
+card.appendChild(img);
+
+}
+
+const description = document.createElement("p");
+description.textContent = item.description || "";
+card.appendChild(description);
+
+const link = safeURL(item.link) || image;
+
+if(link){
+
+const button = document.createElement("a");
+button.href = link;
+button.download = "";
+button.textContent = "📥 تحميل الخلفية";
+card.appendChild(button);
+
+}
+
+list.appendChild(card);
+
+});
+
+}catch(error){
+
+status.textContent = "❌ "+error.message;
+
+}
+
+}
+
+loadWallpapers();
+
+</script>
 
 </body>
 </html>

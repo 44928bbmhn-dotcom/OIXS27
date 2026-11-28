@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CAS27 - اختبار الصور</title>
+
+<style>
+body {
+background:#082e20;
+color:#ffd700;
+font-family:Arial,sans-serif;
+text-align:center;
+padding:20px;
+}
+
+img {
+width:100%;
+max-width:450px;
+border:2px solid #ffd700;
+border-radius:18px;
+}
+
+button {
+width:100%;
+padding:16px;
+background:#ffd700;
+color:#082e20;
+border:0;
+border-radius:12px;
+font-size:18px;
+font-weight:bold;
+}
+
+#status {
+padding:15px;
+font-size:20px;
+}
+</style>
+</head>
+
+<body>
+
+<h1>CAS27</h1>
+<h2>📸 اختبار الصور</h2>
+
+<button onclick="testImage()">
+بدء اختبار الصورة
+</button>
+
+<p id="status">جاهز للاختبار</p>
+
+<img id="photo" hidden>
+
+<script>
+function testImage(){
+
+const photo = document.getElementById("photo");
+const status = document.getElementById("status");
+
+status.textContent = "جاري اختبار الصورة...";
+photo.hidden = true;
+
+photo.onload = function(){
+photo.hidden = false;
+status.textContent = "✅ نجح اختبار الصورة";
+status.style.color = "#55ff88";
+};
+
+photo.onerror = function(){
+status.textContent = "❌ فشل تحميل الصورة";
+status.style.color = "#ff5555";
+};
+
+photo.src =
+"./images/034f2da7-59db-4735-b8bc-146829c195db.jpg?v="
++ Date.now();
+
+}
+</script>
+
+</body>
+</html>

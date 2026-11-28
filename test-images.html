@@ -1,204 +1,939 @@
-<!DOCTYPE html>
+export default {
+  async fetch(request, env) {
+    const url = new URL(request.url);
+
+    if (!env.ADMIN_PASSWORD || !env.GITHUB_TOKEN) {
+      return new Response("يجب إعداد المتغيرات السرية", {
+        status: 503
+      });
+    }
+
+    const auth = request.headers.get("Authorization");
+    const expected = "Basic " + btoa("admin:" + env.ADMIN_PASSWORD);
+
+    if (auth !== expected) {
+      return new Response("تسجيل الدخول", {
+        status: 401,
+        headers: {
+          "WWW-Authenticate": 'Basic realm="OIXS27"'
+        }
+      });
+    }
+
+    const owner = env.GITHUB_OWNER || "44928bbmhn-dotcom";
+    const repo = env.GITHUB_REPO || "cas27-v6";
+    const branch = env.GITHUB_BRANCH || "main";
+    const path = "content/shortcuts.json";
+
+    const base =
+      `https://api.github.com/repos/${owner}/${repo}/contents/`;
+
+    const githubHeaders = {
+      "Authorization": `Bearer ${env.GITHUB_TOKEN}`,
+      "User-Agent": "OIXS27-Admin",
+      "Accept": "application/vnd.github+json",
+      "Content-Type": "application/json"
+    };
+
+    const json = (data, status = 200) =>
+      new Response(JSON.stringify(data), {
+        status,
+        headers: {
+          "Content-Type": "application/json; charset=utf-8",
+          "Cache-Control": "no-store"
+        }
+      });
+
+    function encode(bytes) {
+      let result = "";
+
+      for (let i = 0; i < bytes.length; i += 8192) {
+        result += String.fromCharCode(
+          ...bytes.subarray(i, i + 8192)
+        );
+      }
+
+      return btoa(result);
+    }
+
+    async function readFile(file) {
+      const r = await fetch(
+        base + file + "?ref=" + encodeURIComponent(branch),
+        { headers: githubHeaders }
+      );
+
+      if (!r.ok) {
+        throw new Error("GitHub: " + r.status);
+      }
+
+      return await r.json();
+    }
+
+    async function saveFile(file, content, sha) {
+      const body = {
+        message: "OIXS27 V7 Update",
+        content,
+        branch
+      };
+
+      if (sha) body.sha = sha;
+
+      const r = await fetch(base + file, {
+        method: "PUT",
+        headers: githubHeaders,
+        body: JSON.stringify(body)
+      });
+
+      if (!r.ok) {
+        throw new Error("GitHub: " + r.status);
+      }
+
+      return await r.json();
+    }
+
+    try {
+
+      if (
+        request.method === "POST" &&
+        request.headers.get("Origin") !== url.origin
+      ) {
+        return json({error:"طلب غير مسموح"},403);
+      }
+
+      if (url.pathname === "/api/info") {
+        return json({owner,repo,branch});
+      }
+
+      if (
+        url.pathname === "/api/data" &&
+        request.method === "GET"
+      ) {
+        const file = await readFile(path);
+
+        const bytes = Uint8Array.from(
+          atob(file.content.replace(/\s/g, "")),
+          c => c.charCodeAt(0)
+        );
+
+        return json(
+          JSON.parse(new TextDecoder().decode(bytes))
+        );
+      }
+
+      if (
+        url.pathname === "/api/save" &&
+        request.method === "POST"
+      ) {
+        const data = await request.json();
+        const file = await readFile(path);
+
+        await saveFile(
+          path,
+          encode(
+            new TextEncoder().encode(
+              JSON.stringify(data,null,2)
+            )
+          ),
+          file.sha
+        );
+
+        return json({success:true});
+      }
+
+      if (
+        url.pathname === "/api/upload" &&
+        request.method === "POST"
+      ) {
+
+        const form = await request.formData();
+        const file = form.get("file");
+
+        if (!file || typeof file.arrayBuffer !== "function") {
+          return json({error:"اختر ملفاً"},400);
+        }
+
+        const formats = {
+          "image/jpeg":"jpg",
+          "image/png":"png",
+          "image/webp":"webp",
+          "image/gif":"gif",
+          "audio/mpeg":"mp3",
+          "audio/mp4":"m4a",
+          "audio/x-m4a":"m4a",
+          "audio/wav":"wav",
+          "audio/x-wav":"wav",
+          "audio/aac":"aac",
+          "audio/ogg":"ogg"
+        };
+
+        const ext = formats[file.type];
+
+        if (!ext) {
+          return json({error:"صيغة غير مدعومة"},400);
+        }
+
+        if (file.size > 10 * 1024 * 1024) {
+          return json({error:"الحد الأقصى 10MB"},400);
+        }
+
+        const folder = file.type.startsWith("image/")
+          ? "images"
+          : "audio";
+
+        const name = crypto.randomUUID() + "." + ext;
+        const filePath = folder + "/" + name;
+
+        const bytes = new Uint8Array(
+          await file.arrayBuffer()
+        );
+
+        const saved = await saveFile(
+          filePath,
+          encode(bytes)
+        );
+
+        const link =
+          `https://${owner}.github.io/${repo}/${filePath}`;
+
+        return json({
+          success:true,
+          url:link,
+          path:filePath,
+          format:ext,
+          commit:saved.commit?.sha
+        });
+      }
+
+      if (url.pathname !== "/") {
+        return new Response("Not Found",{status:404});
+      }
+
+      return new Response(PAGE,{
+        headers:{
+          "Content-Type":"text/html; charset=utf-8",
+          "Cache-Control":"no-store",
+          "X-Content-Type-Options":"nosniff",
+          "X-Frame-Options":"DENY"
+        }
+      });
+
+    } catch(error) {
+      return json({error:error.message},500);
+    }
+  }
+};
+
+const PAGE = `<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>CAS27 - اختبار الصور</title>
+<meta name="viewport"
+content="width=device-width,initial-scale=1">
+
+<title>OIXS27 V7</title>
 
 <style>
-*{
-box-sizing:border-box;
-}
+
+*{box-sizing:border-box}
 
 body{
-background:#082e20;
-color:#ffd700;
+background:#06251c;
+color:#eac66b;
 font-family:Arial,sans-serif;
-text-align:center;
-padding:20px;
+margin:0;
+padding:15px;
 }
 
 main{
-max-width:500px;
+max-width:600px;
 margin:auto;
+}
+
+h1,h2{text-align:center}
+
+.box{
+background:#103b2d;
+border:1px solid #b9984f;
+border-radius:16px;
+padding:15px;
+margin-bottom:15px;
+}
+
+input,select,textarea,button{
+width:100%;
+padding:15px;
+margin:7px 0;
+border-radius:12px;
+border:1px solid #b9984f;
+font-size:16px;
+}
+
+input,select,textarea{
+background:#071e17;
+color:white;
+}
+
+button{
+background:#d5b35e;
+color:#06251c;
+font-weight:bold;
+cursor:pointer;
+}
+
+button:disabled{
+opacity:.5;
 }
 
 img{
 width:100%;
-border:2px solid #ffd700;
-border-radius:18px;
-margin-top:15px;
+max-height:500px;
+object-fit:contain;
+border-radius:15px;
+border:1px solid #eac66b;
+margin-top:10px;
 }
 
-button{
-width:100%;
-padding:16px;
-background:#ffd700;
-color:#082e20;
-border:0;
-border-radius:12px;
-font-size:18px;
-font-weight:bold;
-margin:8px 0;
+audio{width:100%}
+
+a{
+color:#eac66b;
+overflow-wrap:anywhere;
 }
 
-input{
-width:100%;
-padding:15px;
-background:#123b2e;
+.delete{
+background:#8d2929;
 color:white;
-border:1px solid #ffd700;
-border-radius:12px;
-margin:10px 0;
 }
 
-#status{
-padding:15px;
-font-size:20px;
+#status,#testStatus,#info{
+text-align:center;
+padding:12px;
+white-space:pre-wrap;
+overflow-wrap:anywhere;
 }
 
-hr{
-border:0;
-border-top:1px solid #ffd700;
-margin:25px 0;
+[hidden]{
+display:none!important;
 }
+
 </style>
 </head>
 
 <body>
-
 <main>
 
-<h1>CAS27</h1>
-<h2>📸 اختبار الصور</h2>
+<h1>🔐 OIXS27 V7</h1>
 
-<button onclick="testImage()">
-اختبار صورة GitHub
-</button>
-
-<hr>
-
-<h2>📱 رفع صورة من الآيفون</h2>
-
-<input type="file"
-id="file"
-accept="image/*">
-
-<button onclick="uploadImage()">
-⬆️ اختبار رفع الصورة
-</button>
-
-<button onclick="clearImage()">
-🔄 إعادة الاختبار
-</button>
-
-<p id="status">
-جاهز للاختبار
+<p style="text-align:center">
+إدارة الموقع والخدمات
 </p>
 
-<img id="photo" hidden>
+<div id="info"></div>
+
+<button onclick="toggleTest()">
+🧪 مركز اختبار الصور
+</button>
+
+<div class="box" id="testBox" hidden>
+
+<h2>📷 اختبار الصور</h2>
+
+<input type="file" id="testPhoto"
+accept="image/jpeg,image/png,image/webp,image/gif">
+
+<button onclick="previewTest()">
+👁️ اختبار معاينة الصورة
+</button>
+
+<button id="testUpload" onclick="uploadTest()">
+⬆️ اختبار الرفع إلى GitHub
+</button>
+
+<button onclick="checkTest()">
+🔄 اختبار الصورة المنشورة
+</button>
+
+<div id="testStatus">
+اختر صورة للتجربة
+</div>
+
+<img id="testPreview" hidden>
+
+<a id="testLink" target="_blank"
+rel="noopener noreferrer" hidden>
+🔗 فتح الصورة المنشورة
+</a>
+
+</div>
+
+<div class="box">
+
+<select id="category">
+
+<option value="shortcuts">اختصارات iPhone</option>
+<option value="images">الصور</option>
+<option value="wallpapers">الخلفيات</option>
+<option value="services">الخدمات</option>
+<option value="audio">الصوتيات</option>
+<option value="apps">التطبيقات</option>
+<option value="ringtones">النغمات</option>
+<option value="websites">المواقع</option>
+<option value="government">الخدمات الحكومية</option>
+<option value="shops">المتاجر</option>
+<option value="beauty">قسم السيدات</option>
+<option value="tools">الأدوات</option>
+
+</select>
+
+<input id="title" placeholder="اسم الخدمة">
+
+<textarea id="description"
+placeholder="الوصف"></textarea>
+
+<input id="link" placeholder="رابط الخدمة">
+
+<input id="image" placeholder="رابط الصورة">
+
+<label>📷 رفع صورة من iPhone</label>
+
+<input type="file" id="photo"
+accept="image/jpeg,image/png,image/webp,image/gif">
+
+<button onclick="upload('photo',this)">
+⬆️ رفع الصورة
+</button>
+
+<img id="photoPreview" hidden>
+
+<label>🎵 رفع ملف صوتي</label>
+
+<input type="file" id="sound"
+accept=".mp3,.m4a,.wav,.aac,.ogg,audio/*">
+
+<button onclick="upload('sound',this)">
+⬆️ رفع الصوت
+</button>
+
+<button onclick="add()">
+➕ إضافة / تحديث
+</button>
+
+<button onclick="save(this)">
+💾 حفظ ونشر GitHub
+</button>
+
+<button onclick="load()">
+🔄 تحديث البيانات
+</button>
+
+<div id="status"></div>
+
+</div>
+
+<div id="items"></div>
 
 </main>
 
 <script>
 
-const photo =
-document.getElementById("photo");
+let data = {};
+let editing = -1;
+let loaded = false;
+let testURL = "";
+let testObjectURL = "";
+let photoObjectURL = "";
 
-const status =
-document.getElementById("status");
+const el = id => document.getElementById(id);
 
-let localURL = "";
+function status(message){
+  el("status").textContent = message;
+}
 
-function showImage(src,message){
+function testStatus(message){
+  el("testStatus").textContent = message;
+}
 
-photo.hidden = true;
+async function api(path,options){
 
-status.textContent =
-"جاري اختبار الصورة...";
+  const r = await fetch(path,options);
+  const result = await r.json();
 
-status.style.color = "#ffd700";
+  if(!r.ok){
+    throw new Error(result.error || "حدث خطأ");
+  }
 
-photo.onload = function(){
+  return result;
+}
 
-photo.hidden = false;
+async function info(){
 
-status.textContent = message;
+  try{
 
-status.style.color = "#55ff88";
+    const result = await api("/api/info");
+
+    el("info").textContent =
+      "🟢 GitHub: " + result.repo +
+      " | " + result.branch;
+
+  }catch(e){
+
+    el("info").textContent = "❌ " + e.message;
+
+  }
+}
+
+function toggleTest(){
+
+  el("testBox").hidden =
+    !el("testBox").hidden;
+
+}
+
+function previewTest(){
+
+  const file = el("testPhoto").files[0];
+
+  if(!file){
+    testStatus("اختر صورة أولاً");
+    return;
+  }
+
+  if(testObjectURL){
+    URL.revokeObjectURL(testObjectURL);
+  }
+
+  testObjectURL = URL.createObjectURL(file);
+
+  const img = el("testPreview");
+
+  img.onload = ()=>{
+    img.hidden = false;
+    testStatus("✅ نجح اختبار معاينة الصورة");
+  };
+
+  img.onerror = ()=>{
+    img.hidden = true;
+    testStatus("❌ تعذر عرض الصورة");
+  };
+
+  img.src = testObjectURL;
+
+}
+
+async function uploadTest(){
+
+  const file = el("testPhoto").files[0];
+
+  if(!file){
+    testStatus("اختر صورة أولاً");
+    return;
+  }
+
+  el("testUpload").disabled = true;
+  el("testLink").hidden = true;
+  testURL = "";
+
+  try{
+
+    testStatus("⏳ جاري رفع الصورة إلى GitHub...");
+
+    const form = new FormData();
+
+    form.append("file",file);
+
+    const result = await api("/api/upload",{
+      method:"POST",
+      body:form
+    });
+
+    testURL = result.url;
+
+    el("testLink").href = testURL;
+    el("testLink").hidden = false;
+
+    testStatus("✅ تم حفظ الصورة في GitHub");
+
+    checkTest();
+
+  }catch(e){
+
+    testStatus("❌ " + e.message);
+
+  }finally{
+
+    el("testUpload").disabled = false;
+
+  }
+}
+
+function checkTest(){
+
+  if(!testURL){
+    testStatus("ارفع صورة أولاً");
+    return;
+  }
+
+  testStatus("⏳ جاري اختبار رابط الصورة...");
+
+  const img = el("testPreview");
+
+  img.hidden = true;
+
+  img.onload = ()=>{
+
+    img.hidden = false;
+
+    testStatus(
+      "✅ نجح رفع الصورة وحفظها ونشرها وعرضها"
+    );
+
+  };
+
+  img.onerror = ()=>{
+
+    testStatus(
+      "⚠️ تم الحفظ في GitHub ولكن الصورة غير متاحة بعد. أعد الاختبار بعد دقيقة."
+    );
+
+  };
+
+  img.src = testURL + "?v=" + Date.now();
+
+}
+
+async function load(){
+
+  try{
+
+    status("⏳ جاري تحميل البيانات...");
+
+    data = await api("/api/data");
+
+    loaded = true;
+    editing = -1;
+
+    render();
+
+    status("✅ تم تحميل بيانات GitHub");
+
+  }catch(e){
+
+    status("❌ " + e.message);
+
+  }
+}
+
+async function upload(id,button){
+
+  const file = el(id).files[0];
+
+  if(!file){
+    status("اختر الملف أولاً");
+    return;
+  }
+
+  button.disabled = true;
+
+  try{
+
+    if(id === "photo"){
+
+      if(photoObjectURL){
+        URL.revokeObjectURL(photoObjectURL);
+      }
+
+      photoObjectURL = URL.createObjectURL(file);
+
+      el("photoPreview").src = photoObjectURL;
+      el("photoPreview").hidden = false;
+
+    }
+
+    status("⏳ جاري رفع الملف...");
+
+    const form = new FormData();
+
+    form.append("file",file);
+
+    const result = await api("/api/upload",{
+      method:"POST",
+      body:form
+    });
+
+    if(id === "photo"){
+
+      el("image").value = result.url;
+
+      if(!el("link").value){
+        el("link").value = result.url;
+      }
+
+    }else{
+
+      el("link").value = result.url;
+
+    }
+
+    status(
+      "✅ تم حفظ الملف في GitHub. قد يتأخر ظهوره حتى اكتمال النشر."
+    );
+
+  }catch(e){
+
+    status("❌ " + e.message);
+
+  }finally{
+
+    button.disabled = false;
+
+  }
+}
+
+function add(){
+
+  if(!loaded){
+    status("حمّل بيانات GitHub أولاً");
+    return;
+  }
+
+  const category = el("category").value;
+  const title = el("title").value.trim();
+
+  if(!title){
+    status("اكتب الاسم أولاً");
+    return;
+  }
+
+  if(!Array.isArray(data[category])){
+    data[category] = [];
+  }
+
+  const item = {
+    title,
+    name:title,
+    description:el("description").value,
+    link:el("link").value,
+    image:el("image").value
+  };
+
+  if(editing >= 0){
+
+    data[category][editing] = item;
+
+  }else{
+
+    data[category].push(item);
+
+  }
+
+  editing = -1;
+
+  ["title","description","link","image","photo","sound"]
+  .forEach(id => el(id).value = "");
+
+  el("photoPreview").hidden = true;
+
+  render();
+
+  status("✅ تمت الإضافة، اضغط حفظ ونشر");
+
+}
+
+async function save(button){
+
+  if(!loaded){
+    status("حمّل بيانات GitHub أولاً");
+    return;
+  }
+
+  button.disabled = true;
+
+  try{
+
+    status("⏳ جاري الحفظ...");
+
+    await api("/api/save",{
+      method:"POST",
+      headers:{
+        "Content-Type":"application/json"
+      },
+      body:JSON.stringify(data)
+    });
+
+    status("✅ تم حفظ البيانات في GitHub");
+
+  }catch(e){
+
+    status("❌ " + e.message);
+
+  }finally{
+
+    button.disabled = false;
+
+  }
+}
+
+function safeURL(value){
+
+  try{
+
+    const u = new URL(value);
+
+    return u.protocol === "https:" ? u.href : "";
+
+  }catch{
+
+    return "";
+
+  }
+}
+
+function render(){
+
+  const category = el("category").value;
+  const list = data[category] || [];
+  const root = el("items");
+
+  root.replaceChildren();
+
+  list.forEach((item,index)=>{
+
+    const card = document.createElement("div");
+
+    card.className = "box";
+
+    const title = document.createElement("h3");
+
+    title.textContent = item.title || item.name || "";
+
+    card.append(title);
+
+    const imageURL = safeURL(item.image);
+
+    if(imageURL){
+
+      const img = document.createElement("img");
+
+      img.src = imageURL;
+      img.loading = "lazy";
+
+      img.onerror = ()=>{
+
+        img.hidden = true;
+
+        const message = document.createElement("p");
+
+        message.textContent =
+          "⚠️ الصورة غير متاحة حالياً";
+
+        card.append(message);
+
+      };
+
+      card.append(img);
+
+    }
+
+    const description = document.createElement("p");
+
+    description.textContent = item.description || "";
+
+    card.append(description);
+
+    const linkURL = safeURL(item.link);
+
+    if(linkURL){
+
+      if(/\\.(mp3|m4a|wav|aac|ogg)$/i.test(linkURL)){
+
+        const audio = document.createElement("audio");
+
+        audio.controls = true;
+        audio.src = linkURL;
+
+        card.append(audio);
+
+      }
+
+      const link = document.createElement("a");
+
+      link.href = linkURL;
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
+      link.textContent = "🔗 فتح الرابط";
+
+      card.append(link);
+
+    }
+
+    const edit = document.createElement("button");
+
+    edit.textContent = "✏️ تعديل";
+
+    edit.onclick = ()=>{
+
+      editing = index;
+
+      el("title").value = item.title || item.name || "";
+      el("description").value = item.description || "";
+      el("link").value = item.link || "";
+      el("image").value = item.image || "";
+
+      window.scrollTo(0,0);
+
+    };
+
+    card.append(edit);
+
+    const del = document.createElement("button");
+
+    del.className = "delete";
+    del.textContent = "🗑️ حذف";
+
+    del.onclick = ()=>{
+
+      if(confirm("هل تريد حذف الخدمة؟")){
+
+        list.splice(index,1);
+
+        editing = -1;
+
+        render();
+
+        status("اضغط حفظ ونشر لتأكيد الحذف");
+
+      }
+
+    };
+
+    card.append(del);
+
+    root.append(card);
+
+  });
+
+}
+
+el("category").onchange = ()=>{
+
+  editing = -1;
+
+  render();
 
 };
 
-photo.onerror = function(){
+el("testPhoto").onchange = ()=>{
 
-status.textContent =
-"❌ فشل تحميل الصورة";
+  testURL = "";
+  el("testLink").hidden = true;
 
-status.style.color = "#ff5555";
+  previewTest();
 
 };
 
-photo.src = src;
-
-}
-
-function testImage(){
-
-showImage(
-"./images/034f2da7-59db-4735-b8bc-146829c195db.jpg?v="
-+ Date.now(),
-"✅ نجح اختبار صورة GitHub"
-);
-
-}
-
-function uploadImage(){
-
-const file =
-document.getElementById("file").files[0];
-
-if(!file){
-
-status.textContent =
-"⚠️ اختر صورة أولاً";
-
-return;
-
-}
-
-if(localURL){
-URL.revokeObjectURL(localURL);
-}
-
-localURL = URL.createObjectURL(file);
-
-showImage(
-localURL,
-"✅ نجح اختيار الصورة وعرضها"
-);
-
-}
-
-function clearImage(){
-
-photo.hidden = true;
-
-photo.removeAttribute("src");
-
-if(localURL){
-URL.revokeObjectURL(localURL);
-localURL = "";
-}
-
-document.getElementById("file").value = "";
-
-status.textContent = "جاهز للاختبار";
-
-status.style.color = "#ffd700";
-
-}
+info();
+load();
 
 </script>
-
 </body>
-</html>
+</html>`;

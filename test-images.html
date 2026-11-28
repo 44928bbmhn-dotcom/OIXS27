@@ -6,7 +6,11 @@
 <title>CAS27 - اختبار الصور</title>
 
 <style>
-body {
+*{
+box-sizing:border-box;
+}
+
+body{
 background:#082e20;
 color:#ffd700;
 font-family:Arial,sans-serif;
@@ -14,14 +18,19 @@ text-align:center;
 padding:20px;
 }
 
-img {
-width:100%;
-max-width:450px;
-border:2px solid #ffd700;
-border-radius:18px;
+main{
+max-width:500px;
+margin:auto;
 }
 
-button {
+img{
+width:100%;
+border:2px solid #ffd700;
+border-radius:18px;
+margin-top:15px;
+}
+
+button{
 width:100%;
 padding:16px;
 background:#ffd700;
@@ -30,53 +39,165 @@ border:0;
 border-radius:12px;
 font-size:18px;
 font-weight:bold;
+margin:8px 0;
 }
 
-#status {
+input{
+width:100%;
+padding:15px;
+background:#123b2e;
+color:white;
+border:1px solid #ffd700;
+border-radius:12px;
+margin:10px 0;
+}
+
+#status{
 padding:15px;
 font-size:20px;
+}
+
+hr{
+border:0;
+border-top:1px solid #ffd700;
+margin:25px 0;
 }
 </style>
 </head>
 
 <body>
 
+<main>
+
 <h1>CAS27</h1>
 <h2>📸 اختبار الصور</h2>
 
 <button onclick="testImage()">
-بدء اختبار الصورة
+اختبار صورة GitHub
 </button>
 
-<p id="status">جاهز للاختبار</p>
+<hr>
+
+<h2>📱 رفع صورة من الآيفون</h2>
+
+<input type="file"
+id="file"
+accept="image/*">
+
+<button onclick="uploadImage()">
+⬆️ اختبار رفع الصورة
+</button>
+
+<button onclick="clearImage()">
+🔄 إعادة الاختبار
+</button>
+
+<p id="status">
+جاهز للاختبار
+</p>
 
 <img id="photo" hidden>
 
+</main>
+
 <script>
-function testImage(){
 
-const photo = document.getElementById("photo");
-const status = document.getElementById("status");
+const photo =
+document.getElementById("photo");
 
-status.textContent = "جاري اختبار الصورة...";
+const status =
+document.getElementById("status");
+
+let localURL = "";
+
+function showImage(src,message){
+
 photo.hidden = true;
 
+status.textContent =
+"جاري اختبار الصورة...";
+
+status.style.color = "#ffd700";
+
 photo.onload = function(){
+
 photo.hidden = false;
-status.textContent = "✅ نجح اختبار الصورة";
+
+status.textContent = message;
+
 status.style.color = "#55ff88";
+
 };
 
 photo.onerror = function(){
-status.textContent = "❌ فشل تحميل الصورة";
+
+status.textContent =
+"❌ فشل تحميل الصورة";
+
 status.style.color = "#ff5555";
+
 };
 
-photo.src =
-"./images/034f2da7-59db-4735-b8bc-146829c195db.jpg?v="
-+ Date.now();
+photo.src = src;
 
 }
+
+function testImage(){
+
+showImage(
+"./images/034f2da7-59db-4735-b8bc-146829c195db.jpg?v="
++ Date.now(),
+"✅ نجح اختبار صورة GitHub"
+);
+
+}
+
+function uploadImage(){
+
+const file =
+document.getElementById("file").files[0];
+
+if(!file){
+
+status.textContent =
+"⚠️ اختر صورة أولاً";
+
+return;
+
+}
+
+if(localURL){
+URL.revokeObjectURL(localURL);
+}
+
+localURL = URL.createObjectURL(file);
+
+showImage(
+localURL,
+"✅ نجح اختيار الصورة وعرضها"
+);
+
+}
+
+function clearImage(){
+
+photo.hidden = true;
+
+photo.removeAttribute("src");
+
+if(localURL){
+URL.revokeObjectURL(localURL);
+localURL = "";
+}
+
+document.getElementById("file").value = "";
+
+status.textContent = "جاهز للاختبار";
+
+status.style.color = "#ffd700";
+
+}
+
 </script>
 
 </body>

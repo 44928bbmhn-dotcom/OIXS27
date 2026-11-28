@@ -1,1 +1,292 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CAS27 V7</title>
 
+<style>
+*{box-sizing:border-box}
+
+body{
+background:#082e20;
+color:#ffd700;
+font-family:Arial,sans-serif;
+margin:0;
+padding:15px;
+text-align:center;
+}
+
+main{
+max-width:600px;
+margin:auto;
+}
+
+h1{
+font-size:42px;
+margin:25px 0;
+}
+
+button,a.btn{
+display:block;
+width:100%;
+padding:20px;
+margin:12px 0;
+background:#17543d;
+color:#ffd700;
+border:1px solid #a58b39;
+border-radius:18px;
+font-size:20px;
+text-decoration:none;
+cursor:pointer;
+}
+
+.admin{
+background:#987923!important;
+color:white!important;
+}
+
+.card{
+background:#103b2d;
+border:1px solid #a58b39;
+border-radius:18px;
+padding:15px;
+margin:15px 0;
+}
+
+img,video{
+width:100%;
+border-radius:12px;
+}
+
+audio{
+width:100%;
+}
+
+a{
+color:#ffd700;
+}
+
+#content{
+display:none;
+}
+
+</style>
+</head>
+
+<body>
+<main>
+
+<h1>CAS27 V7</h1>
+<h2>مكتبة الخدمات</h2>
+
+<div id="menu">
+
+<a class="btn admin"
+href="https://oixs27-admin-v7.44928bbmhn.workers.dev/">
+⚙️ إدارة الموقع
+</a>
+
+<button onclick="openSection('apps','التطبيقات')">
+📱 التطبيقات
+</button>
+
+<button onclick="openSection('shortcuts','الاختصارات')">
+⚡ الاختصارات
+</button>
+
+<button onclick="openSection('images','الصور')">
+🖼️ الصور
+</button>
+
+<button onclick="openSection('videos','مقاطع الفيديو')">
+🎬 مقاطع الفيديو
+</button>
+
+<button onclick="openSection('audio','المقاطع الصوتية')">
+🎵 المقاطع الصوتية
+</button>
+
+<button onclick="openSection('wallpapers','الخلفيات')">
+🎨 الخلفيات
+</button>
+
+<button onclick="openSection('services','الخدمات')">
+🏛️ الخدمات
+</button>
+
+<button onclick="openSection('government','الخدمات الحكومية')">
+🇸🇦 الخدمات الحكومية
+</button>
+
+<button onclick="openSection('ringtones','النغمات')">
+🔔 نغمات iPhone
+</button>
+
+<button onclick="openSection('websites','المواقع')">
+🌐 المواقع الإلكترونية
+</button>
+
+<button onclick="openSection('shops','المتاجر')">
+🛍️ المتاجر
+</button>
+
+<button onclick="openSection('beauty','قسم السيدات')">
+🌸 قسم السيدات
+</button>
+
+<button onclick="openSection('tools','الأدوات')">
+🛠️ الأدوات
+</button>
+
+</div>
+
+<div id="content">
+
+<button onclick="goBack()">
+↩️ الرجوع للرئيسية
+</button>
+
+<h2 id="sectionTitle"></h2>
+
+<div id="items"></div>
+
+</div>
+
+<p>© CAS27 V7 — 2026</p>
+
+</main>
+
+<script>
+
+const menu=document.getElementById("menu");
+const content=document.getElementById("content");
+const items=document.getElementById("items");
+
+function safeURL(value){
+try{
+const u=new URL(value,location.href);
+return u.protocol==="https:"?u.href:"";
+}catch{
+return "";
+}
+}
+
+async function openSection(category,title){
+
+menu.style.display="none";
+content.style.display="block";
+
+document.getElementById("sectionTitle").textContent=title;
+
+items.textContent="جاري تحميل الخدمات...";
+
+try{
+
+const response=await fetch(
+"content/shortcuts.json?t="+Date.now(),
+{cache:"no-store"}
+);
+
+if(!response.ok){
+throw new Error("تعذر تحميل البيانات");
+}
+
+const data=await response.json();
+const list=data[category]||[];
+
+items.replaceChildren();
+
+if(!list.length){
+items.textContent="لا توجد إضافات حالياً";
+return;
+}
+
+list.forEach(item=>{
+
+const card=document.createElement("div");
+card.className="card";
+
+const heading=document.createElement("h3");
+heading.textContent=item.title||item.name||"";
+card.appendChild(heading);
+
+const imageURL=safeURL(item.image||"");
+
+if(item.image&&imageURL){
+
+const img=document.createElement("img");
+img.src=imageURL;
+img.loading="lazy";
+
+img.onerror=()=>{
+img.remove();
+};
+
+card.appendChild(img);
+
+}
+
+const description=document.createElement("p");
+description.textContent=item.description||"";
+card.appendChild(description);
+
+const linkURL=safeURL(item.link||"");
+
+if(item.link&&linkURL){
+
+if(category==="audio"||category==="ringtones"){
+
+const audio=document.createElement("audio");
+audio.controls=true;
+audio.src=linkURL;
+card.appendChild(audio);
+
+}
+
+if(category==="videos"&&
+/\.(mp4|webm|mov)$/i.test(new URL(linkURL).pathname)){
+
+const video=document.createElement("video");
+video.controls=true;
+video.playsInline=true;
+video.src=linkURL;
+card.appendChild(video);
+
+}
+
+const link=document.createElement("a");
+link.className="btn";
+link.href=linkURL;
+link.target="_blank";
+link.rel="noopener noreferrer";
+link.textContent="فتح الخدمة";
+
+card.appendChild(link);
+
+}
+
+items.appendChild(card);
+
+});
+
+}catch(error){
+
+items.textContent="❌ "+error.message;
+
+}
+
+}
+
+function goBack(){
+
+content.style.display="none";
+menu.style.display="block";
+window.scrollTo(0,0);
+
+}
+
+</script>
+
+</body>
+</html>
